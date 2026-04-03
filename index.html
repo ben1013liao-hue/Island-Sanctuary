@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>FF14 無人島工坊模擬器</title>
+    <style>
+        body { background-color: #1a1a1a; color: #e0e0e0; font-family: "Microsoft JhengHei", sans-serif; padding: 10px; margin: 0; overflow-x: hidden; }
+        .container { max-width: 1800px; width: 98%; margin: auto; }
+        
+        #top-summary { 
+            position: sticky; top: 0; z-index: 100;
+            background: #2d2d2d; padding: 12px 20px; border-radius: 0 0 8px 8px; 
+            border: 1px solid #ffd700; border-top: none;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+        }
+        .result-box { font-size: 1.5em; color: #00ff00; font-weight: bold; }
+
+        .section { background: #2d2d2d; padding: 8px 12px; border-radius: 8px; margin-top: 8px; border: 1px solid #444; }
+        
+        .flex-row { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
+        .flex-row > div { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+        select, input { background: #3d3d3d; color: white; border: 1px solid #666; padding: 4px 6px; border-radius: 4px; cursor: pointer; font-size: 13px; }
+
+        details summary { cursor: pointer; color: #ffd700; font-weight: bold; padding: 5px; font-size: 14px; list-style: none; display: flex; align-items: center; gap: 15px; }
+        details summary::-webkit-details-marker { display: none; }
+        .master-checkbox { background: #222; padding: 3px 10px; border-radius: 4px; border: 1px solid #444; font-size: 12px; color: #eee; font-weight: normal; }
+        
+        .grid-no-icon { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 5px; }
+        .checkbox-item { font-size: 12px; display: flex; align-items: center; cursor: pointer; }
+
+        .filter-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
+        .filter-label { font-size: 12px; color: #888; font-weight: bold; white-space: nowrap; }
+        .btn-group { display: flex; gap: 4px; flex-wrap: wrap; }
+        .btn-filter { padding: 4px 12px; font-size: 12px; background: transparent; color: #aaa; border: 1px solid #555; border-radius: 12px; cursor: pointer; white-space: nowrap; }
+        .btn-filter:hover { background: #333; color: #ddd; }
+        .btn-filter.active { background: #ffd700; color: #000; border-color: #ffd700; font-weight: bold; }
+        .divider { width: 1px; height: 16px; background: #666; margin: 0 5px; }
+        .btn-combo { padding: 4px 12px; font-size: 12px; border-radius: 12px; cursor: pointer; background: transparent; border: 1px solid #ff9900; color: #ff9900; font-weight: bold; white-space: nowrap; }
+        .btn-combo.active { background: #ff9900; color: #000; box-shadow: 0 0 8px rgba(255,153,0,0.5); }
+
+        .main-layout { display: grid; grid-template-columns: 1fr 400px; gap: 12px; margin-top: 10px; align-items: start; }
+        .days-container { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; overflow-x: auto; padding-bottom: 5px; }
+        
+        .day-col { background: #222; border: 1px solid #444; border-radius: 6px; display: flex; flex-direction: column; min-height: 650px; cursor: pointer; transition: all 0.2s; }
+        .day-col.active { border-color: #ffd700; box-shadow: 0 0 10px rgba(255,215,0,0.3); background: #262626; }
+        .day-col.rest { opacity: 0.6; }
+        
+        .day-header { background: #333; padding: 8px; text-align: center; border-radius: 5px 5px 0 0; font-weight: bold; font-size: 14px; color: #eee; }
+        .day-header .day-sub { font-size: 12px; color: #999; margin-top: 4px; display: flex; justify-content: space-between; align-items: center; }
+        
+        .day-revenue { display: flex; justify-content: space-between; align-items: center; color: #ff4444; font-size: 14px; font-weight: bold; padding: 6px 10px; border-bottom: 1px solid #444; }
+        .btn-clear-day { background: none; border: none; color: #ff4444; cursor: pointer; font-size: 16px; padding: 2px; line-height: 1; border-radius: 3px; }
+        .btn-clear-day:hover { background: #555; color: #ff0000; }
+        
+        .slot-list { padding: 8px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+
+        .schedule-slot { background: #333; padding: 10px 12px; border-radius: 6px; border-left: 4px solid #ffd700; display: flex; flex-direction: column; gap: 6px; position: relative; }
+        .schedule-slot.dummy { border-left-color: #555; background: #2a2a2a; opacity: 0.8; }
+        
+        .slot-row-1 { display: flex; justify-content: space-between; align-items: center; }
+        .slot-time { color: #88aadd; font-family: monospace; font-size: 13px; font-weight: bold; letter-spacing: 0.5px; }
+        .btn-del { background: none; border: none; color: #ff4444; font-size: 16px; font-weight: bold; cursor: pointer; padding: 0 4px; line-height: 1; }
+        .btn-del:hover { color: #ff0000; transform: scale(1.2); }
+        
+        .slot-row-2 { display: flex; justify-content: space-between; align-items: center; }
+        .slot-name { font-weight: bold; font-size: 16px; color: #fff; }
+        .slot-price { color: #00ff00; font-size: 15px; font-weight: bold; }
+        .schedule-slot.dummy .slot-price { color: #555; }
+        
+        .slot-row-3 { display: flex; justify-content: space-between; align-items: center; }
+        .slot-cat { font-size: 11px; color: #999; }
+        .slot-combo { color: #ff9900; font-size: 12px; font-weight: bold; }
+
+        .product-sidebar { background: #222; border: 1px solid #444; border-radius: 6px; display: flex; flex-direction: column; height: 100%; max-height: 800px; }
+        .sidebar-header { background: #333; padding: 10px 12px; font-weight: bold; color: #ffd700; border-radius: 5px 5px 0 0; text-align: center; font-size: 14px; }
+        
+        .dummy-add-row { display: flex; justify-content: space-around; background: #2a2a2a; padding: 8px; border-bottom: 1px solid #444; }
+        .btn-dummy { background: #444; border: 1px dashed #777; color: #ccc; border-radius: 4px; font-size: 12px; padding: 4px 8px; cursor: pointer; transition: 0.2s; }
+        .btn-dummy:hover { background: #555; color: #fff; border-color: #aaa; }
+
+        .product-list { overflow-y: auto; padding: 8px; flex: 1; }
+        .product-item { background: #2a2a2a; border: 1px solid #3d3d3d; border-radius: 4px; padding: 10px; margin-bottom: 8px; display: flex; flex-direction: column; gap: 6px; }
+        .product-item:hover { background: #333; border-color: #555; }
+        .pi-row-1 { display: flex; justify-content: space-between; align-items: center; }
+        .pi-name { font-weight: bold; font-size: 14px; color: #eee; }
+        .pi-time { font-size: 12px; color: #888; }
+        .pi-row-2 { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #aaa; }
+        .pi-row-3 { display: flex; justify-content: space-between; align-items: center; }
+        .combo-badge { background: #ff9900; color: #000; font-size: 11px; padding: 2px 5px; border-radius: 3px; font-weight: bold; }
+        .p-final-price { color: #00ff00; font-weight: bold; font-size: 15px; }
+        .btn-add { padding: 5px 15px; background: #444; color: white; border: 1px solid #666; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: bold; }
+        .btn-add:hover { background: #ffd700; color: #000; border-color: #ffd700; }
+
+        .drawer { display: none; margin-top: 10px; background: #1a1a1a; border: 1px dashed #555; padding: 15px; border-radius: 6px; }
+        .mat-item { display: inline-block; padding: 4px 10px; margin: 3px 5px 3px 0; border-radius: 4px; font-size: 13px; cursor: pointer; transition: all 0.2s; user-select: none; }
+        .mat-item:active { transform: scale(0.95); }
+        .mat-item.dimmed { opacity: 0.3; filter: grayscale(100%); text-decoration: line-through; }
+        .mat-gen { background: #333; border: 1px solid #555; }
+        .mat-rare { background: #004466; border: 1px solid #0088cc; color: #fff; }
+        .mat-live { background: #4a2222; border: 1px solid #aa4444; color: #fff; }
+        .mat-crop { background: #224a22; border: 1px solid #44aa44; color: #fff; }
+        .mat-count { color: #ffd700; font-weight: bold; margin-left: 5px; }
+        .mat-row { display: flex; align-items: center; flex-wrap: wrap; margin-bottom: 10px; border-bottom: 1px dashed #333; padding-bottom: 10px; }
+        .mat-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .mat-title { width: 90px; font-weight: bold; font-size: 14px; }
+
+        .modal-overlay { display: none; position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.85); z-index: 999; align-items: center; justify-content: center; }
+        .batch-modal { width: 95%; max-width: 1500px; height: 90vh; background: #1e1e1e; border-radius: 8px; border: 2px solid #ffd700; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.9); }
+        .batch-header { background: #333; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #555; }
+        .batch-filters { padding: 12px 20px; background: #262626; border-bottom: 1px solid #444; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .batch-content { flex: 1; overflow-y: auto; padding: 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 15px; align-content: start; }
+        .batch-item { background: #2a2a2a; border: 1px solid #444; padding: 12px; border-radius: 6px; }
+        .batch-item-name { font-weight: bold; color: #eee; font-size: 15px; margin-bottom: 8px; display: flex; justify-content: space-between; }
+        .batch-item-rank { font-size: 11px; color: #888; font-weight: normal; }
+        .batch-controls { display: flex; flex-direction: column; gap: 8px; }
+        .bc-row { display: flex; }
+        .btn-radio { padding: 6px 0; border: 1px solid #555; background: #222; color: #aaa; cursor: pointer; font-size: 13px; font-weight: bold; flex: 1; text-align: center; transition: 0.1s; }
+        .btn-radio:first-child { border-radius: 4px 0 0 4px; border-right: none; }
+        .btn-radio:last-child { border-radius: 0 4px 4px 0; border-left: none; }
+        .btn-radio:not(:first-child):not(:last-child) { border-right: none; }
+        .btn-radio:active { transform: scale(0.95); }
+
+        .pop-14 { background: #cc0000 !important; color: #fff !important; border-color: #ff4444 !important; }
+        .pop-12 { background: #cc7700 !important; color: #fff !important; border-color: #ff9933 !important; }
+        .pop-10 { background: #555 !important; color: #fff !important; border-color: #777 !important; }
+        .pop-08 { background: #333 !important; color: #888 !important; border-color: #444 !important; }
+
+        .sup-16 { background: #cc0000 !important; color: #fff !important; border-color: #ff4444 !important; }
+        .sup-13 { background: #cc7700 !important; color: #fff !important; border-color: #ff9933 !important; }
+        .sup-10 { background: #555 !important; color: #fff !important; border-color: #777 !important; }
+        .sup-08 { background: #3377cc !important; color: #fff !important; border-color: #55aaff !important; }
+        .sup-06 { background: #0044aa !important; color: #fff !important; border-color: #0066ff !important; }
+    </style>
+</head>
+<body>
+
+<div id="batchOverlay" class="modal-overlay" onclick="if(event.target===this) toggleBatchPanel()">
+    <div class="batch-modal">
+        <div class="batch-header">
+            <h2 style="margin: 0; color: #ffd700; font-size: 20px;">⚙️ 全局市場行情設定 (點擊即存檔)</h2>
+            <button class="btn-filter" style="background:#ff4444; color:#fff; border:none; font-size:14px; padding:6px 15px;" onclick="toggleBatchPanel()">完成並關閉</button>
+        </div>
+        <div class="batch-filters">
+            <span class="filter-label">依時間尋找:</span>
+            <div id="batchTimeFilters" class="btn-group">
+                <button class="btn-filter active" onclick="filterBatchTime('全部', this)">全部</button>
+                <button class="btn-filter" onclick="filterBatchTime(4, this)">4 小時</button>
+                <button class="btn-filter" onclick="filterBatchTime(6, this)">6 小時</button>
+                <button class="btn-filter" onclick="filterBatchTime(8, this)">8 小時</button>
+            </div>
+        </div>
+        <div class="batch-content" id="batchList"></div>
+    </div>
+</div>
+
+<div class="container">
+    <div id="top-summary">
+        <div class="result-box" id="finalWeeklyResult">全週預計總收益: 0</div>
+        <div style="display: flex; gap: 10px;">
+            <button class="btn-filter" style="border-color:#0bf; color:#0bf; padding:6px 15px; font-size:14px;" onclick="toggleBatchPanel()">⚙️ 批次市場設定</button>
+            <button class="btn-filter" style="padding:6px 15px; font-size:14px;" onclick="toggleDrawer('materialDrawer')">📦 材料清單</button>
+            <button class="btn-filter" style="border-color:#ff9900; color:#ff9900; padding:6px 15px; font-size:14px;" onclick="toggleDrawer('codeDrawer')">💾 供需代碼分享</button>
+            <button onclick="clearWeekly()" style="background:#800; color:white; border:none; padding:6px 15px; border-radius:4px; cursor:pointer; font-size:14px;">重設整週班表</button>
+        </div>
+    </div>
+
+    <div id="materialDrawer" class="drawer">
+        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px; flex-wrap: wrap;">
+            <h3 style="margin:0; color:#ffd700; font-size:15px;">📦 本週所需材料總計 <span style="color:#aaa; font-size:12px; font-weight:normal;">(點擊標籤可標記為已採集)</span></h3>
+            <div style="display: flex; align-items: center; gap: 5px;">
+                <span style="color:#0bf; font-weight:bold; font-size:14px;">稀有素材：</span>
+                <span id="rareMatList"></span>
+            </div>
+        </div>
+        <div class="mat-row"><div class="mat-title" style="color:#ccc;">一般素材：</div><div id="generalMatList" style="flex:1;"></div></div>
+        <div class="mat-row"><div class="mat-title" style="color:#f99;">畜牧素材：</div><div id="livestockMatList" style="flex:1;"></div></div>
+        <div class="mat-row"><div class="mat-title" style="color:#9f9;">耕種素材：</div><div id="cropMatList" style="flex:1;"></div></div>
+    </div>
+
+    <div id="codeDrawer" class="drawer">
+        <h3 style="margin-top:0; color:#ff9900; font-size:14px;">💾 市場供需狀態分享 (只同步市場，不會覆蓋玩家自己排的班表！)</h3>
+        <textarea id="codeArea" style="width:100%; height:50px; background:#222; color:#0f0; border:1px solid #444; padding:5px; font-family:monospace; margin-bottom: 8px;" placeholder="在此貼上別人分享的代碼，或是點擊下方生成你的代碼..."></textarea>
+        <div>
+            <button class="btn-filter" style="background:#ff9900; color:#000; border-color:#ff9900;" onclick="exportMarketCode()">生成並複製代碼</button> 
+            <button class="btn-filter" onclick="importMarketCode()">匯入代碼覆蓋當前市場</button>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="flex-row" style="margin-bottom: 8px;">
+            <div>等級: <input type="number" id="userRank" value="18" min="1" max="20" style="width: 40px;" onchange="refreshAll()"></div>
+            <div>工坊數: <input type="number" id="numWorkshops" value="3" min="1" max="4" style="width: 40px;" onchange="refreshAll()"></div>
+            <div>工坊等級: <select id="wsLevel" onchange="refreshAll()"><option value="1.0">Lv1</option><option value="1.1">Lv2</option><option value="1.2">Lv3</option><option value="1.3">Lv4</option><option value="1.4" selected>Lv5 (1.4x)</option></select></div>
+            <div>地標: <select id="landmarks" onchange="refreshAll()"><option value="10">0個</option><option value="15">1個</option><option value="20">2個</option><option value="25">3個</option><option value="35">4個</option><option value="45" selected>5個 (45)</option></select></div>
+            <div>初始氣勢(週二): <input type="number" id="startGroove" value="0" min="0" max="45" style="width: 40px;" onchange="refreshAll()"></div>
+            <div style="margin-left: auto; color: #888; font-size: 12px;">✅ 設定與班表已自動記憶</div>
+        </div>
+
+        <details style="margin-bottom: 8px;" id="filterDetails">
+            <summary>
+                <div>▶ 🚫 材料排除 (點擊展開設定)</div>
+                <div class="master-checkbox"><label onclick="event.stopPropagation()"><input type="checkbox" id="checkExLive" onchange="toggleAllLivestock(this.checked); refreshAll()"> 排除畜牧物資</label></div>
+                <div class="master-checkbox"><label onclick="event.stopPropagation()"><input type="checkbox" id="checkExCrop" onchange="toggleAllCrops(this.checked); refreshAll()"> 排除耕種物資</label></div>
+            </summary>
+            <div id="filterContent" style="padding-top:10px;">
+                <div class="grid-no-icon" id="livestockFilter"></div><hr style="border:0; border-top:1px solid #444; margin:5px 0;">
+                <div class="grid-no-icon" id="cropFilter"></div>
+            </div>
+        </details>
+
+        <div class="filter-row">
+            <span class="filter-label">分類:</span>
+            <div id="catFilters" class="btn-group"></div>
+        </div>
+        <div class="filter-row">
+            <span class="filter-label">時間:</span>
+            <div id="timeFilters" class="btn-group">
+                <button class="btn-filter active" onclick="filterByTime('全部', this)">全部</button>
+                <button class="btn-filter" onclick="filterByTime(4, this)">4h</button>
+                <button class="btn-filter" onclick="filterByTime(6, this)">6h</button>
+                <button class="btn-filter" onclick="filterByTime(8, this)">8h</button>
+            </div>
+            <div class="divider"></div>
+            <button id="btnCombo" class="btn-combo" onclick="toggleComboFilter(this)">🔗 連鎖推薦</button>
+        </div>
+    </div>
+
+    <div class="main-layout">
+        <div class="days-container" id="daysContainer"></div>
+        <div class="product-sidebar">
+            <div class="sidebar-header" id="sidebarHeader">選擇商品加入 星期二 (週期1)</div>
+            <div class="dummy-add-row">
+                <span style="color:#aaa; font-size:12px; font-weight:bold; line-height: 24px;">⏳ 插入留白:</span>
+                <button class="btn-dummy" onclick="addBlankTime(1)">1h</button>
+                <button class="btn-dummy" onclick="addBlankTime(2)">2h</button>
+                <button class="btn-dummy" onclick="addBlankTime(4)">4h</button>
+                <button class="btn-dummy" onclick="addBlankTime(6)">6h</button>
+                <button class="btn-dummy" onclick="addBlankTime(8)">8h</button>
+            </div>
+            <div class="product-list" id="productList"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+// --- V14 終極資料庫 (已完全封裝所有材料數量！) ---
+const rareMats = ["香薺", "石榴石原石", "雲杉原木", "錘頭鯊", "銀礦", "長臂蝦"];
+const livestock = ["絨毛", "乳汁", "尖爪", "獸毛", "鳥蛋", "尖牙", "甲殼", "羽毛", "角片"];
+const crops = ["甘藍", "南瓜", "新薯", "高山蘿蔔", "莓果", "洋蔥", "番茄", "小麥", "玉米", "小蘿蔔", "紅辣椒", "韭蔥", "花豆", "红菜", "茄子", "西葫蘆", "西瓜", "甜新薯", "西蘭花", "水牛豆"];
+const dayNames = ["星期二", "星期三", "星期四", "星期五", "星期六", "星期日", "星期一"];
+const allCategories = ['藥品', '家具', '木工', '菜餚', '海產', '飾品', '防具', '金屬', '武器', '耐儲食', '紡織', '動物', '調料', '點心', '日用品', '窯爐'];
+
+const products = [
+    { name: "恢復藥", level: 1, base: 28, time: 4, cats: ["藥品"], materials: {"棕櫚葉":2, "草葉":2} },
+    { name: "火藥", level: 1, base: 28, time: 4, cats: ["藥品", "窯爐"], materials: {"砂礫":2, "石灰岩":1, "草葉":1} },
+    { name: "座椅", level: 1, base: 42, time: 6, cats: ["家具", "木工"], materials: {"原木":4, "藤蔓":2} },
+    { name: "烤扇貝", level: 1, base: 28, time: 4, cats: ["菜餚", "海產"], materials: {"雙殼貝":2, "海藻":2} },
+    { name: "木製項鍊", level: 1, base: 28, time: 4, cats: ["飾品", "木工"], materials: {"小樹枝":3, "藤蔓":1} },
+    { name: "珊瑚戒指", level: 1, base: 42, time: 6, cats: ["飾品", "海產"], materials: {"珊瑚":3, "藤蔓":3} },
+    { name: "開面盔", level: 1, base: 42, time: 6, cats: ["防具", "金屬"], materials: {"銅礦":3, "砂礫":3} },
+    { name: "石刃棒", level: 1, base: 42, time: 6, cats: ["武器", "木工"], materials: {"棕櫚原木":3, "石材":3} },
+    { name: "酸泡菜", level: 1, base: 40, time: 4, cats: ["耐儲食"], materials: {"甘藍":1, "岩鹽":3} },
+    { name: "烤南瓜", level: 1, base: 40, time: 4, cats: ["菜餚"], materials: {"南瓜":1, "樹液":3} },
+    { name: "束腰衣", level: 1, base: 72, time: 6, cats: ["防具", "紡織"], materials: {"絨毛":2, "藤蔓":4} },
+    { name: "廚刀", level: 1, base: 44, time: 4, cats: ["日用品", "動物"], materials: {"尖爪":1, "棕櫚原木":3} },
+    { name: "木刷", level: 1, base: 44, time: 4, cats: ["日用品", "木工"], materials: {"獸毛":1, "棕櫚原木":3} },
+    { name: "水煮蛋", level: 1, base: 44, time: 4, cats: ["菜餚", "動物"], materials: {"鳥蛋":1, "海藻":3} },
+    { name: "骨拳", level: 1, base: 72, time: 6, cats: ["武器", "動物"], materials: {"甲殼":2, "石材":4} },
+    { name: "獸牙耳墜", level: 1, base: 44, time: 4, cats: ["飾品", "動物"], materials: {"尖牙":1, "藤蔓":3} },
+    { name: "黃油", level: 1, base: 44, time: 4, cats: ["調料", "動物"], materials: {"乳汁":1, "岩鹽":3} },
+    { name: "磚塊櫃台", level: 5, base: 48, time: 6, cats: ["家具", "窯爐"], materials: {"黏土":2, "石灰岩":2, "棕櫚原木":2} },
+    { name: "綿羊銅像", level: 5, base: 64, time: 8, cats: ["家具", "金屬"], materials: {"錫砂":3, "銅礦":3, "原木":2} },
+    { name: "植物成長劑", level: 5, base: 163, time: 8, cats: ["藥品"], materials: {"香薺":2, "草葉":3, "小樹枝":3} },
+    { name: "石榴石刺劍", level: 5, base: 136, time: 8, cats: ["武器", "窯爐"], materials: {"石榴石原石":2, "銅礦":3, "錫砂":3} },
+    { name: "雲杉圓盾", level: 5, base: 136, time: 8, cats: ["防具", "木工"], materials: {"雲杉原木":2, "銅礦":3, "石材":3} },
+    { name: "鯊油", level: 5, base: 136, time: 8, cats: ["日用品", "海產"], materials: {"錘頭鯊":2, "海藻":3, "樹液":3} },
+    { name: "白銀耳夾", level: 5, base: 136, time: 8, cats: ["飾品", "金屬"], materials: {"銀礦":2, "錫砂":3, "珊瑚":3} },
+    { name: "甜新薯", level: 5, base: 72, time: 6, cats: ["點心"], materials: {"乳汁":1, "新薯":2, "樹液":3} },
+    { name: "高山蘿蔔沙拉", level: 5, base: 48, time: 4, cats: ["菜餚"], materials: {"高山蘿蔔":2, "草葉":1, "樹液":1} },
+    { name: "焦糖", level: 6, base: 81, time: 6, cats: ["點心"], materials: {"乳汁":2, "甘蔗":4} },
+    { name: "緞帶", level: 6, base: 54, time: 6, cats: ["飾品", "紡織"], materials: {"棉花":2, "銅礦":2, "藤蔓":2} },
+    { name: "繩索", level: 6, base: 36, time: 4, cats: ["日用品", "紡織"], materials: {"麻":2, "草葉":1, "藤蔓":1} },
+    { name: "騎士帽", level: 6, base: 81, time: 6, cats: ["防具", "紡織"], materials: {"羽毛":2, "棉花":2, "麻":2} },
+    { name: "角笛", level: 6, base: 81, time: 6, cats: ["日用品", "動物"], materials: {"角片":2, "黏土":2, "麻":2} },
+    { name: "鹽漬鱈魚", level: 7, base: 54, time: 6, cats: ["耐儲食", "海產"], materials: {"海水魚":4, "岩鹽":2} },
+    { name: "墨魚汁", level: 7, base: 36, time: 4, cats: ["調料", "海產"], materials: {"烏賊":2, "岩鹽":2} },
+    { name: "仙藥", level: 7, base: 54, time: 6, cats: ["藥品", "海產"], materials: {"水母":2, "棕櫚葉":2, "海藻":2} },
+    { name: "莓果醬", level: 7, base: 78, time: 6, cats: ["調料"], materials: {"莓果":3, "甘蔗":2, "樹液":1} },
+    { name: "番茄醬", level: 7, base: 52, time: 4, cats: ["調料"], materials: {"番茄":2, "甘蔗":1, "草葉":1} },
+    { name: "洋蔥湯", level: 7, base: 78, time: 6, cats: ["菜餚"], materials: {"洋蔥":3, "岩鹽":2, "草葉":1} },
+    { name: "魚派", level: 7, base: 78, time: 6, cats: ["點心", "海產"], materials: {"小麥":3, "海水魚":2, "甘蔗":1} },
+    { name: "玉米片", level: 7, base: 52, time: 4, cats: ["耐儲食"], materials: {"玉米":2, "甘蔗":2} },
+    { name: "醃小蘿蔔", level: 7, base: 104, time: 8, cats: ["耐儲食"], materials: {"小蘿蔔":4, "蘋果":2, "甘蔗":2} },
+    { name: "鐵斧", level: 8, base: 72, time: 8, cats: ["武器", "金屬"], materials: {"鐵礦":3, "原木":3, "砂礫":2} },
+    { name: "石英戒指", level: 8, base: 72, time: 8, cats: ["飾品", "窯爐"], materials: {"石英":3, "鐵礦":3, "石材":2} },
+    { name: "瓷罐", level: 8, base: 72, time: 8, cats: ["日用品", "窯爐"], materials: {"花崗岩":3, "石英":3, "黏土":2} },
+    { name: "果蔬汁", level: 8, base: 78, time: 6, cats: ["藥品"], materials: {"甘藍":3, "草葉":2, "海藻":1} },
+    { name: "南瓜布丁", level: 8, base: 78, time: 6, cats: ["點心"], materials: {"鳥蛋":1, "乳汁":1, "南瓜":3} },
+    { name: "綿羊地毯", level: 8, base: 90, time: 6, cats: ["家具", "動物"], materials: {"絨毛":3, "棉花":2, "麻":1} },
+    { name: "園藝鐮", level: 9, base: 90, time: 6, cats: ["日用品", "金屬"], materials: {"尖爪":3, "鐵礦":2, "棕櫚原木":1} },
+    { name: "床", level: 9, base: 120, time: 8, cats: ["家具", "紡織"], materials: {"獸毛":4, "棉花":2, "原木":2} },
+    { name: "鱗指套", level: 9, base: 120, time: 8, cats: ["防具", "動物"], materials: {"甲殼":4, "鐵礦":2, "棉花":2} },
+    { name: "手杖", level: 9, base: 120, time: 8, cats: ["武器", "木工"], materials: {"尖牙":4, "石英":2, "原木":2} },
+    { name: "珊瑚劍", level: 10, base: 72, time: 8, cats: ["武器", "海產"], materials: {"珊瑚":3, "天然樹脂":3, "棕櫚原木":2} },
+    { name: "椰汁", level: 10, base: 36, time: 4, cats: ["點心", "藥品"], materials: {"椰子":2, "甘蔗":2} },
+    { name: "蜂蜜", level: 10, base: 36, time: 4, cats: ["點心", "調料"], materials: {"蜂巢":2, "樹液":2} },
+    { name: "藍蛋白石", level: 10, base: 80, time: 8, cats: ["窯爐"], materials: {"木化石":4, "砂礫":4} },
+    { name: "乾花", level: 10, base: 54, time: 6, cats: ["日用品", "家具"], materials: {"彩色繽紛的花":3, "椰子":2, "樹液":1} },
+    { name: "辣椒粉", level: 11, base: 52, time: 4, cats: ["調料", "藥品"], materials: {"紅辣椒":2, "草葉":2} },
+    { name: "韭蔥洋蔥湯", level: 11, base: 90, time: 6, cats: ["藥品", "動物"], materials: {"乳汁":1, "韭蔥":3, "海藻":3} },
+    { name: "無人麵包", level: 11, base: 52, time: 4, cats: ["菜餚", "藥品"], materials: {"小麥":2, "海水魚":1, "岩鹽":1} },
+    { name: "新薯沙拉", level: 11, base: 52, time: 4, cats: ["菜餚"], materials: {"新薯":2, "蘋果":1, "草葉":1} },
+    { name: "調味汁", level: 11, base: 52, time: 4, cats: ["調料"], materials: {"洋蔥":2, "樹液":1, "海藻":1} },
+    { name: "暖爐", level: 12, base: 54, time: 6, cats: ["家具", "金屬"], materials: {"石炭":2, "鐵礦":3, "花崗岩":1} },
+    { name: "提燈", level: 12, base: 80, time: 8, cats: ["日用品"], materials: {"燈火茸":3, "石英":3, "銅礦":2} },
+    { name: "泡鹼", level: 12, base: 36, time: 4, cats: ["日用品", "藥品"], materials: {"發泡水":2, "岩鹽":2} },
+    { name: "五海雜燴湯", level: 12, base: 136, time: 8, cats: ["菜餚", "海產"], materials: {"番茄":2, "長臂蝦":2, "雙殼貝":2, "烏賊":2} },
+    { name: "化石標本", level: 13, base: 54, time: 6, cats: ["動物", "窯爐"], materials: {"堆積岩":3, "棕櫚原木":2, "棉花":1} },
+    { name: "浴缸", level: 13, base: 72, time: 8, cats: ["家具", "窯爐"], materials: {"大理石":4, "花崗岩":2, "黏土":2} },
+    { name: "眼鏡", level: 13, base: 54, time: 6, cats: ["防具", "日用品"], materials: {"靈銀礦":3, "石英":2, "銅礦":1} },
+    { name: "隔熱玻璃", level: 13, base: 80, time: 8, cats: ["窯爐"], materials: {"幻影石":4, "砂礫":4} },
+    { name: "煎紅花菜豆", level: 14, base: 52, time: 4, cats: ["菜餚"], materials: {"花豆":2, "岩鹽":2} },
+    { name: "紅菜湯", level: 14, base: 78, time: 6, cats: ["菜餚"], materials: {"乳汁":1, "紅菜":3, "新薯":1} },
+    { name: "僧厥鑲茄子", level: 14, base: 90, time: 6, cats: ["菜餚"], materials: {"茄子":2, "洋蔥":2, "番茄":2} },
+    { name: "醃西葫蘆", level: 14, base: 104, time: 8, cats: ["耐儲食"], materials: {"西葫蘆":4, "海藻":2, "甘蔗":2} },
+    { name: "黃銅餐盤", level: 16, base: 36, time: 4, cats: ["日用品", "金屬"], materials: {"黃銅礦":2, "銅礦":2} },
+    { name: "砂輪機", level: 16, base: 60, time: 6, cats: ["日用品"], materials: {"鷹眼砂":2, "靈銀礦":2, "砂礫":2} },
+    { name: "翠銀環刃", level: 17, base: 54, time: 6, cats: ["武器", "金屬"], materials: {"翠銀沙":2, "鐵礦":2, "石英":2} },
+    { name: "金髮飾", level: 17, base: 72, time: 8, cats: ["飾品", "金屬"], materials: {"金礦":4, "黃銅礦":2, "石英":2} },
+    { name: "水晶像", level: 17, base: 80, time: 8, cats: ["家具"], materials: {"水晶層":2, "幻影石":2, "靈銀礦":2, "大理石":2} },
+    { name: "水果撈", level: 18, base: 52, time: 4, cats: ["點心"], materials: {"西瓜":1, "莓果":1, "蘋果":1, "椰子":1} },
+    { name: "甜新薯塔", level: 18, base: 120, time: 8, cats: ["菜餚", "點心"], materials: {"鳥蛋":1, "甜新薯":3, "小麥":1, "甘蔗":3} },
+    { name: "拌細面", level: 18, base: 75, time: 6, cats: ["菜餚"], materials: {"西蘭花":2, "小麥":1, "岩鹽":3} },
+    { name: "水牛豆沙拉", level: 18, base: 52, time: 4, cats: ["菜餚", "動物"], materials: {"乳汁":2, "水牛豆":2} }
+];
+
+// --- 狀態變數 ---
+let weeklySchedules = { 1:[], 2:[], 3:[], 4:[], 5:[], 6:[], 7:[] };
+let restDays = [1, 2];
+let currentPeriod = 1; 
+let currentCat = '全部';
+let batchCurrentTime = '全部'; 
+let currentTimeLimit = '全部';
+let isComboFilterOn = false;
+let statusMap = {}; 
+products.forEach(p => statusMap[p.name] = { pop: 1.0, supply: 1.0 });
+
+function formatTime(hours) { return (hours % 24).toString().padStart(2, '0') + ':00'; }
+function utf8_to_b64(str) { return window.btoa(unescape(encodeURIComponent(str))); }
+function b64_to_utf8(str) { return decodeURIComponent(escape(window.atob(str))); }
+
+function saveData() {
+    const data = {
+        userRank: document.getElementById('userRank').value,
+        numWorkshops: document.getElementById('numWorkshops').value,
+        wsLevel: document.getElementById('wsLevel').value,
+        landmarks: document.getElementById('landmarks').value,
+        startGroove: document.getElementById('startGroove').value,
+        weeklySchedules: weeklySchedules,
+        restDays: restDays,
+        statusMap: statusMap
+    };
+    localStorage.setItem('ff14IslandConfig', JSON.stringify(data));
+}
+
+function loadData() {
+    const saved = localStorage.getItem('ff14IslandConfig');
+    if(saved) {
+        try {
+            const data = JSON.parse(saved);
+            if(data.userRank) document.getElementById('userRank').value = data.userRank;
+            if(data.numWorkshops) document.getElementById('numWorkshops').value = data.numWorkshops;
+            if(data.wsLevel) document.getElementById('wsLevel').value = data.wsLevel;
+            if(data.landmarks) document.getElementById('landmarks').value = data.landmarks;
+            if(data.startGroove) document.getElementById('startGroove').value = data.startGroove;
+            if(data.weeklySchedules) weeklySchedules = data.weeklySchedules;
+            if(data.restDays) restDays = data.restDays;
+            if(data.statusMap) { Object.keys(data.statusMap).forEach(k => { if(statusMap[k]) statusMap[k] = data.statusMap[k]; }); }
+        } catch(e) { console.error("載入失敗", e); }
+    }
+}
+
+function init() {
+    loadData();
+    const lF = document.getElementById('livestockFilter');
+    livestock.forEach(i => lF.innerHTML += `<div class="checkbox-item"><input type="checkbox" value="${i}" onchange="refreshAll()"> ${i}</div>`);
+    const cF = document.getElementById('cropFilter');
+    crops.forEach(i => cF.innerHTML += `<div class="checkbox-item"><input type="checkbox" value="${i}" onchange="refreshAll()"> ${i}</div>`);
+    
+    const cb = document.getElementById('catFilters');
+    cb.innerHTML = `<button class="btn-filter active" onclick="filterByCat('全部', this)">全部</button>`;
+    allCategories.forEach(c => { cb.innerHTML += `<button class="btn-filter" onclick="filterByCat('${c}', this)">${c}</button>`; });
+
+    refreshAll();
+}
+
+function toggleBatchPanel() {
+    const overlay = document.getElementById('batchOverlay');
+    if (overlay.style.display === 'flex') { overlay.style.display = 'none'; } else { renderBatchPanel(); overlay.style.display = 'flex'; }
+}
+
+function filterBatchTime(t, btn) {
+    batchCurrentTime = t === '全部' ? '全部' : parseInt(t);
+    document.querySelectorAll('#batchTimeFilters .btn-filter').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active'); renderBatchPanel();
+}
+
+function setBatchS(name, key, val) { statusMap[name][key] = parseFloat(val); renderBatchPanel(); refreshAll(); }
+
+function renderBatchPanel() {
+    const cont = document.getElementById('batchList');
+    const scrollTop = cont.scrollTop;
+    let html = '';
+    
+    [...products].sort((a,b)=>a.level - b.level).forEach(p => {
+        if(batchCurrentTime !== '全部' && p.time !== batchCurrentTime) return;
+        const s = statusMap[p.name];
+        html += `
+        <div class="batch-item">
+            <div class="batch-item-name">${p.name} <span class="batch-item-rank">(Rank ${p.level} | ${p.time}h)</span></div>
+            <div class="batch-controls">
+                <div class="bc-row">
+                    <button class="btn-radio ${s.pop==1.4?'pop-14':''}" onclick="setBatchS('${p.name}', 'pop', 1.4)">火爆</button>
+                    <button class="btn-radio ${s.pop==1.2?'pop-12':''}" onclick="setBatchS('${p.name}', 'pop', 1.2)">矚目</button>
+                    <button class="btn-radio ${s.pop==1.0?'pop-10':''}" onclick="setBatchS('${p.name}', 'pop', 1.0)">普通</button>
+                    <button class="btn-radio ${s.pop==0.8?'pop-08':''}" onclick="setBatchS('${p.name}', 'pop', 0.8)">無人</button>
+                </div>
+                <div class="bc-row">
+                    <button class="btn-radio ${s.supply==1.6?'sup-16':''}" onclick="setBatchS('${p.name}', 'supply', 1.6)">大缺</button>
+                    <button class="btn-radio ${s.supply==1.3?'sup-13':''}" onclick="setBatchS('${p.name}', 'supply', 1.3)">缺貨</button>
+                    <button class="btn-radio ${s.supply==1.0?'sup-10':''}" onclick="setBatchS('${p.name}', 'supply', 1.0)">正常</button>
+                    <button class="btn-radio ${s.supply==0.8?'sup-08':''}" onclick="setBatchS('${p.name}', 'supply', 0.8)">過剩</button>
+                    <button class="btn-radio ${s.supply==0.6?'sup-06':''}" onclick="setBatchS('${p.name}', 'supply', 0.6)">氾濫</button>
+                </div>
+            </div>
+        </div>`;
+    });
+    cont.innerHTML = html; cont.scrollTop = scrollTop; 
+}
+
+function filterByCat(c, btn) { currentCat = c; document.querySelectorAll('#catFilters .btn-filter').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); updateProductList(); }
+function filterByTime(t, btn) { currentTimeLimit = t==='全部'?'全部':parseInt(t); document.querySelectorAll('#timeFilters .btn-filter').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); updateProductList(); }
+function toggleComboFilter(btn) { 
+    if (weeklySchedules[currentPeriod].length === 0) return alert("請先在當前選中的星期加入至少一件商品，才能啟用連鎖推薦！");
+    isComboFilterOn = !isComboFilterOn; btn.classList.toggle('active'); updateProductList(); 
+}
+function updateS(n,k,v) { statusMap[n][k] = parseFloat(v); refreshAll(); }
+function toggleDrawer(id) { const d = document.getElementById(id); d.style.display = d.style.display === 'block' ? 'none' : 'block'; }
+
+function toggleAllLivestock(checked) { document.querySelectorAll('#livestockFilter input[type="checkbox"]').forEach(cb => cb.checked = checked); }
+function toggleAllCrops(checked) { document.querySelectorAll('#cropFilter input[type="checkbox"]').forEach(cb => cb.checked = checked); }
+
+function selectDay(d) {
+    currentPeriod = d;
+    document.getElementById('sidebarHeader').innerText = `選擇商品加入 ${dayNames[d-1]} (週期${d})`;
+    if(isComboFilterOn && weeklySchedules[d].length === 0) { isComboFilterOn = false; document.getElementById('btnCombo').classList.remove('active'); }
+    refreshAll();
+}
+
+function toggleRestDay(d, event) {
+    event.stopPropagation();
+    if(restDays.includes(d)) { restDays = restDays.filter(x => x !== d); } 
+    else {
+        if(restDays.length >= 2) return alert("一週最多只能設定 2 天休息日！");
+        restDays.push(d); weeklySchedules[d] = []; 
+    }
+    refreshAll();
+}
+
+function clearDay(d, event) {
+    event.stopPropagation();
+    if (weeklySchedules[d].length > 0 && confirm(`確定清空 ${dayNames[d-1]} 的班表嗎？`)) {
+        weeklySchedules[d] = [];
+        if(d === currentPeriod && isComboFilterOn) { isComboFilterOn = false; document.getElementById('btnCombo').classList.remove('active'); }
+        refreshAll();
+    }
+}
+
+function addBlankTime(hours) {
+    if(restDays.includes(currentPeriod)) return alert("休假中不能排班！請先取消休假。");
+    const t = weeklySchedules[currentPeriod].reduce((s,i)=>s+i.time, 0);
+    if(t + hours > 24) return alert("時間不足 (最多24h)");
+    weeklySchedules[currentPeriod].push({ name: "時間留白", time: hours, base: 0, cats: [], materials: {}, isDummy: true });
+    refreshAll();
+}
+
+function refreshAll() {
+    let currentGroove = parseInt(document.getElementById('startGroove').value) || 0;
+    const grooveLimit = parseInt(document.getElementById('landmarks').value);
+    const wsMul = parseFloat(document.getElementById('wsLevel').value);
+    const numWorkshops = parseInt(document.getElementById('numWorkshops').value) || 3;
+    
+    let totalWeeklyRevenue = 0;
+    let allMaterialsNeeded = {};
+    const cont = document.getElementById('daysContainer');
+    cont.innerHTML = "";
+
+    for(let d=1; d<=7; d++) {
+        const schedule = weeklySchedules[d];
+        const isRest = restDays.includes(d);
+        const isActive = currentPeriod === d;
+        let dayRevenue = 0; 
+        let lastP = null;
+        let slotsHtml = "";
+        let currentHour = 16;
+
+        if(!isRest) {
+            schedule.forEach((p, idx) => {
+                let isCombo = false;
+                let val = 0;
+                
+                if (!p.isDummy) {
+                    isCombo = (lastP && !lastP.isDummy && p.name !== lastP.name && p.cats.some(c => lastP.cats.includes(c)));
+                    if(isCombo) {
+                        currentGroove += numWorkshops;
+                        if(currentGroove > grooveLimit) currentGroove = grooveLimit;
+                    }
+                    const s = statusMap[p.name];
+                    const unit = Math.floor(s.pop * s.supply * Math.floor(p.base * wsMul * (1 + currentGroove/100)));
+                    val = unit * (isCombo ? 2 : 1);
+                    dayRevenue += val;
+                    
+                    // V14 核心修正：精準計算數量，且連鎖不會重複扣材料！
+                    Object.entries(p.materials).forEach(([m, qty]) => { 
+                        allMaterialsNeeded[m] = (allMaterialsNeeded[m] || 0) + (qty * numWorkshops); 
+                    });
+                    lastP = p;
+                } else {
+                    lastP = null;
+                }
+                
+                const st = formatTime(currentHour);
+                currentHour += p.time;
+                const et = formatTime(currentHour);
+                
+                if (p.isDummy) {
+                    slotsHtml += `
+                        <div class="schedule-slot dummy">
+                            <div class="slot-row-1"><span class="slot-time">${st} - ${et}</span><button class="btn-del" onclick="removeFromSchedule(${d}, ${idx}, event)">×</button></div>
+                            <div class="slot-row-2"><span class="slot-name">⏳ ${p.name}</span><span class="slot-price" style="color:#888;">無產出</span></div>
+                            <div class="slot-row-3"><span class="slot-cat">(${p.time}h)</span><span class="slot-combo"></span></div>
+                        </div>`;
+                } else {
+                    slotsHtml += `
+                        <div class="schedule-slot">
+                            <div class="slot-row-1"><span class="slot-time">${st} - ${et}</span><button class="btn-del" onclick="removeFromSchedule(${d}, ${idx}, event)" title="刪除此商品">×</button></div>
+                            <div class="slot-row-2"><span class="slot-name">${p.name}</span><span class="slot-price" title="單間收益">$${val}</span></div>
+                            <div class="slot-row-3"><span class="slot-cat">${p.cats.join('/')}</span>${isCombo ? `<span class="slot-combo">(Combo x2)</span>` : `<span></span>`}</div>
+                        </div>`;
+                }
+            });
+            if(schedule.reduce((s,i)=>s+i.time,0) > 24) slotsHtml += `<div style="color:#f44; font-size:13px; text-align:center; font-weight:bold;">⚠ 超時</div>`;
+        } else {
+            slotsHtml = `<div style="text-align:center; padding:20px 0; color:#666; font-size:14px; font-weight:bold;">本日公休</div>`;
+        }
+        
+        let dayTotalRevenue = dayRevenue * numWorkshops;
+        totalWeeklyRevenue += dayTotalRevenue;
+
+        cont.innerHTML += `
+            <div class="day-col ${isActive?'active':''} ${isRest?'rest':''}" onclick="selectDay(${d})">
+                <div class="day-header">
+                    <div>${dayNames[d-1]}</div>
+                    <div class="day-sub"><span>週期 ${d}</span><label onclick="event.stopPropagation()"><input type="checkbox" ${isRest?'checked':''} onchange="toggleRestDay(${d}, event)"> 休</label></div>
+                </div>
+                <div class="day-revenue">
+                    <span style="font-size:11px;">${isRest?'':'<button class="btn-clear-day" onclick="clearDay('+d+', event)" title="清空本日班表">🗑️</button>'}</span>
+                    <span title="已乘上工坊數量">預估: $${dayTotalRevenue} <span style="color:#ff9900; font-size:12px;" title="結算氣勢">(${currentGroove})</span></span>
+                </div>
+                <div class="slot-list">${slotsHtml}</div>
+            </div>`;
+    }
+
+    document.getElementById('finalWeeklyResult').innerText = `全週預計總收益: ${totalWeeklyRevenue}`;
+    updateProductList(); 
+    renderMaterialList(allMaterialsNeeded);
+    saveData(); 
+}
+
+function updateProductList() {
+    let startGr = parseInt(document.getElementById('startGroove').value) || 0;
+    const ws = parseFloat(document.getElementById('wsLevel').value);
+    const numWorkshops = parseInt(document.getElementById('numWorkshops').value) || 3;
+    const grooveLimit = parseInt(document.getElementById('landmarks').value);
+    
+    let grooveForDisplay = startGr;
+    for(let d=1; d<=currentPeriod; d++) {
+        if(!restDays.includes(d)) {
+            let lastP = null;
+            weeklySchedules[d].forEach(p => {
+                if (!p.isDummy) {
+                    if(lastP && !lastP.isDummy && p.name !== lastP.name && p.cats.some(c => lastP.cats.includes(c))) {
+                        grooveForDisplay += numWorkshops;
+                        if(grooveForDisplay > grooveLimit) grooveForDisplay = grooveLimit;
+                    }
+                    lastP = p;
+                } else { lastP = null; }
+            });
+        }
+    }
+
+    const rank = parseInt(document.getElementById('userRank').value) || 1;
+    const ex = Array.from(document.querySelectorAll('#livestockFilter input[type="checkbox"]:checked, #cropFilter input[type="checkbox"]:checked')).map(c => c.value);
+    const list = document.getElementById('productList');
+    list.innerHTML = "";
+
+    const sched = weeklySchedules[currentPeriod];
+    let lastItem = null;
+    if (sched.length > 0) {
+        lastItem = sched[sched.length - 1];
+        if (lastItem.isDummy) lastItem = null; 
+    }
+
+    products.forEach(p => {
+        // V14 核心修正：使用 Object.keys 來讀取材料並進行過濾
+        if (p.level > rank || Object.keys(p.materials).some(m => ex.includes(m))) return;
+        if (currentCat !== '全部' && !p.cats.includes(currentCat)) return;
+        if (currentTimeLimit !== '全部' && p.time !== currentTimeLimit) return;
+        
+        let isComboMatch = lastItem && !lastItem.isDummy && (p.name !== lastItem.name) && p.cats.some(c => lastItem.cats.includes(c));
+        if (isComboFilterOn && !isComboMatch) return;
+        
+        let previewGroove = grooveForDisplay;
+        if(isComboMatch) {
+            previewGroove += numWorkshops;
+            if(previewGroove > grooveLimit) previewGroove = grooveLimit;
+        }
+
+        const s = statusMap[p.name];
+        const est = Math.floor(s.pop * s.supply * Math.floor(p.base * ws * (1 + previewGroove/100)));
+        const div = document.createElement('div');
+        div.className = 'product-item';
+        
+        div.innerHTML = `
+            <div class="pi-row-1">
+                <span class="pi-name">${p.name} <span class="pi-time">(${p.time}h)</span></span>
+                <span class="p-final-price" title="單間工坊預估">$${est}</span>
+            </div>
+            <div class="pi-row-2">
+                <span>${p.cats.join('/')} | 成本: $${p.base}</span>
+                ${isComboMatch?'<span class="combo-badge">⭐連鎖</span>':''}
+            </div>
+            <div class="pi-row-3">
+                <div class="pi-selects">
+                    <select onchange="updateS('${p.name}','pop',this.value)">
+                        <option value="1.4" ${s.pop==1.4?'selected':''}>火爆</option>
+                        <option value="1.2" ${s.pop==1.2?'selected':''}>矚目</option>
+                        <option value="1.0" ${s.pop==1.0?'selected':''}>普通</option>
+                        <option value="0.8" ${s.pop==0.8?'selected':''}>無人</option>
+                    </select>
+                    <select onchange="updateS('${p.name}','supply',this.value)">
+                        <option value="1.6" ${s.supply==1.6?'selected':''}>大缺</option>
+                        <option value="1.3" ${s.supply==1.3?'selected':''}>缺貨</option>
+                        <option value="1.0" ${s.supply==1.0?'selected':''}>正常</option>
+                        <option value="0.8" ${s.supply==0.8?'selected':''}>過剩</option>
+                        <option value="0.6" ${s.supply==0.6?'selected':''}>氾濫</option>
+                    </select>
+                </div>
+                <button class="btn-add" onclick="addToSchedule('${p.name}')">加入</button>
+            </div>
+        `;
+        list.appendChild(div);
+    });
+}
+
+function addToSchedule(name) {
+    if(restDays.includes(currentPeriod)) return alert("休假中不能排班！請先取消休假。");
+    const p = products.find(x => x.name === name);
+    if(weeklySchedules[currentPeriod].reduce((s,i)=>s+i.time, 0) + p.time > 24) return alert("時間不足 (最多24h)");
+    weeklySchedules[currentPeriod].push({...p, isDummy: false});
+    refreshAll();
+}
+
+function removeFromSchedule(d, i, event) {
+    event.stopPropagation();
+    weeklySchedules[d].splice(i, 1);
+    if(d === currentPeriod && weeklySchedules[d].length === 0 && isComboFilterOn) { isComboFilterOn = false; document.getElementById('btnCombo').classList.remove('active'); }
+    refreshAll();
+}
+
+function renderMaterialList(mats) {
+    let rareHtml = [], genHtml = [], liveHtml = [], cropHtml = [];
+    Object.keys(mats).sort().forEach(m => {
+        const html = `<div class="mat-item ${rareMats.includes(m)?'mat-rare':livestock.includes(m)?'mat-live':crops.includes(m)?'mat-crop':'mat-gen'}" onclick="this.classList.toggle('dimmed')" title="點擊標記為已採集">${m}<span class="mat-count">x${mats[m]}</span></div>`;
+        if(rareMats.includes(m)) rareHtml.push(html);
+        else if(livestock.includes(m)) liveHtml.push(html);
+        else if(crops.includes(m)) cropHtml.push(html);
+        else genHtml.push(html);
+    });
+    
+    document.getElementById('rareMatList').innerHTML = rareHtml.join('');
+    document.getElementById('generalMatList').innerHTML = genHtml.join('');
+    document.getElementById('livestockMatList').innerHTML = liveHtml.join('');
+    document.getElementById('cropMatList').innerHTML = cropHtml.join('');
+}
+
+function clearWeekly() { 
+    if(confirm("確定清空所有班表與設定嗎？")) { 
+        weeklySchedules = {1:[], 2:[], 3:[], 4:[], 5:[], 6:[], 7:[]}; 
+        products.forEach(p => statusMap[p.name] = { pop: 1.0, supply: 1.0 });
+        refreshAll(); 
+    } 
+}
+
+function exportMarketCode() {
+    const data = { market: statusMap };
+    const code = utf8_to_b64(JSON.stringify(data));
+    document.getElementById('codeArea').value = code; document.getElementById('codeArea').select(); document.execCommand('copy'); 
+    alert("供需代碼已生成並複製到剪貼簿！快分享給朋友吧！");
+}
+
+function importMarketCode() {
+    try {
+        const inputCode = document.getElementById('codeArea').value;
+        if (!inputCode) return alert("請先貼上代碼！");
+        const data = JSON.parse(b64_to_utf8(inputCode));
+        if(data.market) {
+            statusMap = data.market; refreshAll(); 
+            if (document.getElementById('batchOverlay').style.display === 'flex') { renderBatchPanel(); }
+            alert("市場供需匯入成功！");
+        } else { alert("無效的代碼格式！這可能不是市場供需代碼。"); }
+    } catch(e) { alert("代碼解析失敗，請確認代碼是否複製完整或格式正確！"); console.error(e); }
+}
+
+init();
+</script>
+</body>
+</html>

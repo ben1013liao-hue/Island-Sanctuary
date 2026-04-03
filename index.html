@@ -2,79 +2,87 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FF14 無人島工坊模擬器</title>
     <style>
         body { background-color: #1a1a1a; color: #e0e0e0; font-family: "Microsoft JhengHei", sans-serif; padding: 10px; margin: 0; overflow-x: hidden; }
         .container { max-width: 1800px; width: 98%; margin: auto; }
         
-        #top-summary { 
-            position: sticky; top: 0; z-index: 100;
-            background: #2d2d2d; padding: 12px 20px; border-radius: 0 0 8px 8px; 
-            border: 1px solid #ffd700; border-top: none;
-            display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
-        }
+        #top-summary { position: sticky; top: 0; z-index: 100; background: #2d2d2d; padding: 12px 20px; border-radius: 0 0 8px 8px; border: 1px solid #ffd700; border-top: none; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.6); }
         .result-box { font-size: 1.5em; color: #00ff00; font-weight: bold; }
-
         .section { background: #2d2d2d; padding: 8px 12px; border-radius: 8px; margin-top: 8px; border: 1px solid #444; }
-        
         .flex-row { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
         .flex-row > div { display: flex; align-items: center; gap: 6px; font-size: 13px; }
         select, input { background: #3d3d3d; color: white; border: 1px solid #666; padding: 4px 6px; border-radius: 4px; cursor: pointer; font-size: 13px; }
 
         details summary { cursor: pointer; color: #ffd700; font-weight: bold; padding: 5px; font-size: 14px; list-style: none; display: flex; align-items: center; gap: 15px; }
         details summary::-webkit-details-marker { display: none; }
-        .master-checkbox { background: #222; padding: 3px 10px; border-radius: 4px; border: 1px solid #444; font-size: 12px; color: #eee; font-weight: normal; }
-        
+        .master-checkbox { background: #222; padding: 3px 10px; border-radius: 4px; border: 1px solid #444; font-size: 12px; color: #eee; font-weight: normal; cursor: pointer; }
         .grid-no-icon { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 5px; }
         .checkbox-item { font-size: 12px; display: flex; align-items: center; cursor: pointer; }
 
         .filter-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
         .filter-label { font-size: 12px; color: #888; font-weight: bold; white-space: nowrap; }
         .btn-group { display: flex; gap: 4px; flex-wrap: wrap; }
-        .btn-filter { padding: 4px 12px; font-size: 12px; background: transparent; color: #aaa; border: 1px solid #555; border-radius: 12px; cursor: pointer; white-space: nowrap; }
+        .btn-filter { padding: 4px 12px; font-size: 12px; background: transparent; color: #aaa; border: 1px solid #555; border-radius: 12px; cursor: pointer; white-space: nowrap; transition: 0.2s; }
         .btn-filter:hover { background: #333; color: #ddd; }
         .btn-filter.active { background: #ffd700; color: #000; border-color: #ffd700; font-weight: bold; }
         .divider { width: 1px; height: 16px; background: #666; margin: 0 5px; }
+        
         .btn-combo { padding: 4px 12px; font-size: 12px; border-radius: 12px; cursor: pointer; background: transparent; border: 1px solid #ff9900; color: #ff9900; font-weight: bold; white-space: nowrap; }
         .btn-combo.active { background: #ff9900; color: #000; box-shadow: 0 0 8px rgba(255,153,0,0.5); }
+        .btn-fav { padding: 4px 12px; font-size: 12px; border-radius: 12px; cursor: pointer; background: transparent; border: 1px solid #ff4466; color: #ff4466; font-weight: bold; white-space: nowrap; }
+        .btn-fav.active { background: #ff4466; color: #fff; box-shadow: 0 0 8px rgba(255,68,102,0.5); }
 
-        .main-layout { display: grid; grid-template-columns: 1fr 400px; gap: 12px; margin-top: 10px; align-items: start; }
+        .main-layout { display: grid; grid-template-columns: 1fr 410px; gap: 12px; margin-top: 10px; align-items: start; }
         .days-container { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; overflow-x: auto; padding-bottom: 5px; }
         
-        .day-col { background: #222; border: 1px solid #444; border-radius: 6px; display: flex; flex-direction: column; min-height: 650px; cursor: pointer; transition: all 0.2s; }
+        @media (max-width: 1400px) { .days-container { grid-template-columns: repeat(7, minmax(220px, 1fr)); } }
+        @media (max-width: 1024px) {
+            .main-layout { grid-template-columns: 1fr; }
+            .days-container { grid-template-columns: repeat(7, minmax(260px, 1fr)); }
+            .product-sidebar { max-height: 600px; margin-top: 15px; }
+        }
+
+        .day-col { background: #222; border: 2px solid #444; border-radius: 6px; display: flex; flex-direction: column; min-height: 650px; cursor: pointer; transition: all 0.2s; }
         .day-col.active { border-color: #ffd700; box-shadow: 0 0 10px rgba(255,215,0,0.3); background: #262626; }
         .day-col.rest { opacity: 0.6; }
+        .day-col.drag-over { background: #2a3a2a; border-color: #00ff00; box-shadow: 0 0 15px rgba(0,255,0,0.4); }
         
-        .day-header { background: #333; padding: 8px; text-align: center; border-radius: 5px 5px 0 0; font-weight: bold; font-size: 14px; color: #eee; }
+        .day-header { background: #333; padding: 8px; text-align: center; border-radius: 4px 4px 0 0; font-weight: bold; font-size: 14px; color: #eee; }
         .day-header .day-sub { font-size: 12px; color: #999; margin-top: 4px; display: flex; justify-content: space-between; align-items: center; }
-        
         .day-revenue { display: flex; justify-content: space-between; align-items: center; color: #ff4444; font-size: 14px; font-weight: bold; padding: 6px 10px; border-bottom: 1px solid #444; }
         .btn-clear-day { background: none; border: none; color: #ff4444; cursor: pointer; font-size: 16px; padding: 2px; line-height: 1; border-radius: 3px; }
         .btn-clear-day:hover { background: #555; color: #ff0000; }
         
         .slot-list { padding: 8px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
 
-        .schedule-slot { background: #333; padding: 10px 12px; border-radius: 6px; border-left: 4px solid #ffd700; display: flex; flex-direction: column; gap: 6px; position: relative; }
+        .schedule-slot { background: #333; padding: 10px 12px; border-radius: 6px; border-left: 4px solid #ffd700; display: flex; flex-direction: column; gap: 6px; position: relative; cursor: grab; }
+        .schedule-slot:active { cursor: grabbing; }
+        .schedule-slot.dragging { opacity: 0.4; border: 1px dashed #ffd700; }
         .schedule-slot.dummy { border-left-color: #555; background: #2a2a2a; opacity: 0.8; }
         
         .slot-row-1 { display: flex; justify-content: space-between; align-items: center; }
         .slot-time { color: #88aadd; font-family: monospace; font-size: 13px; font-weight: bold; letter-spacing: 0.5px; }
-        .btn-del { background: none; border: none; color: #ff4444; font-size: 16px; font-weight: bold; cursor: pointer; padding: 0 4px; line-height: 1; }
+        
+        .slot-actions { display: flex; align-items: center; gap: 3px; }
+        .btn-move { background: none; border: none; color: #88aadd; font-size: 12px; cursor: pointer; padding: 2px 4px; border-radius: 3px; }
+        .btn-move:hover { background: #555; color: #fff; }
+        .btn-del { background: none; border: none; color: #ff4444; font-size: 16px; font-weight: bold; cursor: pointer; padding: 0 4px; line-height: 1; margin-left: 2px; }
         .btn-del:hover { color: #ff0000; transform: scale(1.2); }
         
         .slot-row-2 { display: flex; justify-content: space-between; align-items: center; }
-        .slot-name { font-weight: bold; font-size: 16px; color: #fff; }
+        .slot-name { font-weight: bold; font-size: 16px; color: #fff; cursor: help; border-bottom: 1px dotted #888; }
         .slot-price { color: #00ff00; font-size: 15px; font-weight: bold; }
         .schedule-slot.dummy .slot-price { color: #555; }
+        .schedule-slot.dummy .slot-name { color: #888; border-bottom: none; cursor: grab; }
         
         .slot-row-3 { display: flex; justify-content: space-between; align-items: center; }
         .slot-cat { font-size: 11px; color: #999; }
         .slot-combo { color: #ff9900; font-size: 12px; font-weight: bold; }
 
         .product-sidebar { background: #222; border: 1px solid #444; border-radius: 6px; display: flex; flex-direction: column; height: 100%; max-height: 800px; }
-        .sidebar-header { background: #333; padding: 10px 12px; font-weight: bold; color: #ffd700; border-radius: 5px 5px 0 0; text-align: center; font-size: 14px; }
-        
+        .sidebar-header { background: #333; padding: 10px 12px; font-weight: bold; color: #ffd700; border-radius: 5px 5px 0 0; display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
         .dummy-add-row { display: flex; justify-content: space-around; background: #2a2a2a; padding: 8px; border-bottom: 1px solid #444; }
         .btn-dummy { background: #444; border: 1px dashed #777; color: #ccc; border-radius: 4px; font-size: 12px; padding: 4px 8px; cursor: pointer; transition: 0.2s; }
         .btn-dummy:hover { background: #555; color: #fff; border-color: #aaa; }
@@ -83,8 +91,10 @@
         .product-item { background: #2a2a2a; border: 1px solid #3d3d3d; border-radius: 4px; padding: 10px; margin-bottom: 8px; display: flex; flex-direction: column; gap: 6px; }
         .product-item:hover { background: #333; border-color: #555; }
         .pi-row-1 { display: flex; justify-content: space-between; align-items: center; }
-        .pi-name { font-weight: bold; font-size: 14px; color: #eee; }
-        .pi-time { font-size: 12px; color: #888; }
+        .pi-name { font-weight: bold; font-size: 14px; color: #eee; display: flex; align-items: center; gap: 5px; }
+        .btn-star { cursor: pointer; font-size: 16px; color: #555; user-select: none; line-height: 1; transition: 0.2s; }
+        .btn-star.fav-active { color: #ffd700; text-shadow: 0 0 5px rgba(255,215,0,0.5); transform: scale(1.1); }
+        .pi-time { font-size: 12px; color: #888; font-weight: normal; }
         .pi-row-2 { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #aaa; }
         .pi-row-3 { display: flex; justify-content: space-between; align-items: center; }
         .combo-badge { background: #ff9900; color: #000; font-size: 11px; padding: 2px 5px; border-radius: 3px; font-weight: bold; }
@@ -157,7 +167,7 @@
 <div class="container">
     <div id="top-summary">
         <div class="result-box" id="finalWeeklyResult">全週預計總收益: 0</div>
-        <div style="display: flex; gap: 10px;">
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
             <button class="btn-filter" style="border-color:#0bf; color:#0bf; padding:6px 15px; font-size:14px;" onclick="toggleBatchPanel()">⚙️ 批次市場設定</button>
             <button class="btn-filter" style="padding:6px 15px; font-size:14px;" onclick="toggleDrawer('materialDrawer')">📦 材料清單</button>
             <button class="btn-filter" style="border-color:#ff9900; color:#ff9900; padding:6px 15px; font-size:14px;" onclick="toggleDrawer('codeDrawer')">💾 供需代碼分享</button>
@@ -194,7 +204,7 @@
             <div>工坊等級: <select id="wsLevel" onchange="refreshAll()"><option value="1.0">Lv1</option><option value="1.1">Lv2</option><option value="1.2">Lv3</option><option value="1.3">Lv4</option><option value="1.4" selected>Lv5 (1.4x)</option></select></div>
             <div>地標: <select id="landmarks" onchange="refreshAll()"><option value="10">0個</option><option value="15">1個</option><option value="20">2個</option><option value="25">3個</option><option value="35">4個</option><option value="45" selected>5個 (45)</option></select></div>
             <div>初始氣勢(週二): <input type="number" id="startGroove" value="0" min="0" max="45" style="width: 40px;" onchange="refreshAll()"></div>
-            <div style="margin-left: auto; color: #888; font-size: 12px;">✅ 設定與班表已自動記憶</div>
+            <div style="margin-left: auto; color: #888; font-size: 12px;">✅ 支援卡片拖曳跨日＆同日上下調換順序</div>
         </div>
 
         <details style="margin-bottom: 8px;" id="filterDetails">
@@ -214,22 +224,31 @@
             <div id="catFilters" class="btn-group"></div>
         </div>
         <div class="filter-row">
-            <span class="filter-label">時間:</span>
+            <span class="filter-label">時間(多選):</span>
             <div id="timeFilters" class="btn-group">
-                <button class="btn-filter active" onclick="filterByTime('全部', this)">全部</button>
-                <button class="btn-filter" onclick="filterByTime(4, this)">4h</button>
-                <button class="btn-filter" onclick="filterByTime(6, this)">6h</button>
-                <button class="btn-filter" onclick="filterByTime(8, this)">8h</button>
+                <button class="btn-filter active" data-time="全部" onclick="toggleTimeFilter('全部', this)">全部</button>
+                <button class="btn-filter" data-time="4" onclick="toggleTimeFilter(4, this)">4h</button>
+                <button class="btn-filter" data-time="6" onclick="toggleTimeFilter(6, this)">6h</button>
+                <button class="btn-filter" data-time="8" onclick="toggleTimeFilter(8, this)">8h</button>
             </div>
             <div class="divider"></div>
             <button id="btnCombo" class="btn-combo" onclick="toggleComboFilter(this)">🔗 連鎖推薦</button>
+            <button id="btnFavFilter" class="btn-fav" onclick="toggleFavFilter(this)">❤️ 最愛商品</button>
         </div>
     </div>
 
     <div class="main-layout">
         <div class="days-container" id="daysContainer"></div>
+        
         <div class="product-sidebar">
-            <div class="sidebar-header" id="sidebarHeader">選擇商品加入 星期二 (週期1)</div>
+            <div class="sidebar-header">
+                <span id="sidebarTitle">選擇商品加入 星期二</span>
+                <select id="sortSelect" onchange="changeSort(this.value)" style="background:#1a1a1a; color:#ffd700; border:1px solid #555; border-radius:4px; padding:2px 5px; font-weight:bold; cursor:pointer;">
+                    <option value="default">預設排序</option>
+                    <option value="priceDesc">價格：高到低</option>
+                    <option value="priceAsc">價格：低到高</option>
+                </select>
+            </div>
             <div class="dummy-add-row">
                 <span style="color:#aaa; font-size:12px; font-weight:bold; line-height: 24px;">⏳ 插入留白:</span>
                 <button class="btn-dummy" onclick="addBlankTime(1)">1h</button>
@@ -244,10 +263,10 @@
 </div>
 
 <script>
-// --- V14 終極資料庫 (已完全封裝所有材料數量！) ---
+// --- 資料庫 ---
 const rareMats = ["香薺", "石榴石原石", "雲杉原木", "錘頭鯊", "銀礦", "長臂蝦"];
 const livestock = ["絨毛", "乳汁", "尖爪", "獸毛", "鳥蛋", "尖牙", "甲殼", "羽毛", "角片"];
-const crops = ["甘藍", "南瓜", "新薯", "高山蘿蔔", "莓果", "洋蔥", "番茄", "小麥", "玉米", "小蘿蔔", "紅辣椒", "韭蔥", "花豆", "红菜", "茄子", "西葫蘆", "西瓜", "甜新薯", "西蘭花", "水牛豆"];
+const crops = ["甘藍", "南瓜", "新薯", "高山蘿蔔", "莓果", "洋蔥", "番茄", "小麥", "玉米", "小蘿蔔", "紅辣椒", "韭蔥", "花豆", "紅菜", "茄子", "西葫蘆", "西瓜", "甜新薯", "西蘭花", "水牛豆"];
 const dayNames = ["星期二", "星期三", "星期四", "星期五", "星期六", "星期日", "星期一"];
 const allCategories = ['藥品', '家具', '木工', '菜餚', '海產', '飾品', '防具', '金屬', '武器', '耐儲食', '紡織', '動物', '調料', '點心', '日用品', '窯爐'];
 
@@ -338,12 +357,17 @@ const products = [
 // --- 狀態變數 ---
 let weeklySchedules = { 1:[], 2:[], 3:[], 4:[], 5:[], 6:[], 7:[] };
 let restDays = [1, 2];
-let currentPeriod = 1; 
+let currentPeriod = 3; 
 let currentCat = '全部';
-let batchCurrentTime = '全部'; 
-let currentTimeLimit = '全部';
+let currentTimeLimits = ['全部']; 
 let isComboFilterOn = false;
+let isFavFilterOn = false;
+let currentSort = 'default';
+let batchCurrentTime = '全部'; 
+let favorites = []; 
 let statusMap = {}; 
+// V18 修復：新增全域變數，紀錄目前預覽的基礎氣勢
+let currentCachedGroove = 0; 
 products.forEach(p => statusMap[p.name] = { pop: 1.0, supply: 1.0 });
 
 function formatTime(hours) { return (hours % 24).toString().padStart(2, '0') + ':00'; }
@@ -359,7 +383,8 @@ function saveData() {
         startGroove: document.getElementById('startGroove').value,
         weeklySchedules: weeklySchedules,
         restDays: restDays,
-        statusMap: statusMap
+        statusMap: statusMap,
+        favorites: favorites
     };
     localStorage.setItem('ff14IslandConfig', JSON.stringify(data));
 }
@@ -376,21 +401,22 @@ function loadData() {
             if(data.startGroove) document.getElementById('startGroove').value = data.startGroove;
             if(data.weeklySchedules) weeklySchedules = data.weeklySchedules;
             if(data.restDays) restDays = data.restDays;
+            if(data.favorites) favorites = data.favorites;
             if(data.statusMap) { Object.keys(data.statusMap).forEach(k => { if(statusMap[k]) statusMap[k] = data.statusMap[k]; }); }
         } catch(e) { console.error("載入失敗", e); }
     }
 }
 
+// V17 優化: 移除迴圈內的 DOM 操作
 function init() {
     loadData();
-    const lF = document.getElementById('livestockFilter');
-    livestock.forEach(i => lF.innerHTML += `<div class="checkbox-item"><input type="checkbox" value="${i}" onchange="refreshAll()"> ${i}</div>`);
-    const cF = document.getElementById('cropFilter');
-    crops.forEach(i => cF.innerHTML += `<div class="checkbox-item"><input type="checkbox" value="${i}" onchange="refreshAll()"> ${i}</div>`);
     
-    const cb = document.getElementById('catFilters');
-    cb.innerHTML = `<button class="btn-filter active" onclick="filterByCat('全部', this)">全部</button>`;
-    allCategories.forEach(c => { cb.innerHTML += `<button class="btn-filter" onclick="filterByCat('${c}', this)">${c}</button>`; });
+    document.getElementById('livestockFilter').innerHTML = livestock.map(i => `<div class="checkbox-item"><input type="checkbox" value="${i}" onchange="refreshAll()"> ${i}</div>`).join('');
+    document.getElementById('cropFilter').innerHTML = crops.map(i => `<div class="checkbox-item"><input type="checkbox" value="${i}" onchange="refreshAll()"> ${i}</div>`).join('');
+    
+    const catHtml = `<button class="btn-filter active" onclick="filterByCat('全部', this)">全部</button>` + 
+                    allCategories.map(c => `<button class="btn-filter" onclick="filterByCat('${c}', this)">${c}</button>`).join('');
+    document.getElementById('catFilters').innerHTML = catHtml;
 
     refreshAll();
 }
@@ -408,15 +434,15 @@ function filterBatchTime(t, btn) {
 
 function setBatchS(name, key, val) { statusMap[name][key] = parseFloat(val); renderBatchPanel(); refreshAll(); }
 
+// V17 優化: 批次渲染
 function renderBatchPanel() {
     const cont = document.getElementById('batchList');
     const scrollTop = cont.scrollTop;
-    let html = '';
     
-    [...products].sort((a,b)=>a.level - b.level).forEach(p => {
-        if(batchCurrentTime !== '全部' && p.time !== batchCurrentTime) return;
+    const html = [...products].sort((a,b)=>a.level - b.level).map(p => {
+        if(batchCurrentTime !== '全部' && p.time !== batchCurrentTime) return '';
         const s = statusMap[p.name];
-        html += `
+        return `
         <div class="batch-item">
             <div class="batch-item-name">${p.name} <span class="batch-item-rank">(Rank ${p.level} | ${p.time}h)</span></div>
             <div class="batch-controls">
@@ -435,16 +461,57 @@ function renderBatchPanel() {
                 </div>
             </div>
         </div>`;
-    });
+    }).join('');
+    
     cont.innerHTML = html; cont.scrollTop = scrollTop; 
 }
 
 function filterByCat(c, btn) { currentCat = c; document.querySelectorAll('#catFilters .btn-filter').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); updateProductList(); }
-function filterByTime(t, btn) { currentTimeLimit = t==='全部'?'全部':parseInt(t); document.querySelectorAll('#timeFilters .btn-filter').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); updateProductList(); }
+
+function toggleTimeFilter(t, btn) {
+    if (t === '全部') {
+        currentTimeLimits = ['全部'];
+        document.querySelectorAll('#timeFilters .btn-filter').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    } else {
+        const idx = currentTimeLimits.indexOf('全部');
+        if (idx > -1) currentTimeLimits.splice(idx, 1);
+        const tIdx = currentTimeLimits.indexOf(t);
+        if (tIdx > -1) {
+            currentTimeLimits.splice(tIdx, 1);
+            btn.classList.remove('active');
+        } else {
+            currentTimeLimits.push(t);
+            btn.classList.add('active');
+        }
+        if (currentTimeLimits.length === 0) {
+            currentTimeLimits = ['全部'];
+            document.querySelector('#timeFilters .btn-filter[data-time="全部"]').classList.add('active');
+        } else {
+            document.querySelector('#timeFilters .btn-filter[data-time="全部"]').classList.remove('active');
+        }
+    }
+    updateProductList();
+}
+
 function toggleComboFilter(btn) { 
     if (weeklySchedules[currentPeriod].length === 0) return alert("請先在當前選中的星期加入至少一件商品，才能啟用連鎖推薦！");
     isComboFilterOn = !isComboFilterOn; btn.classList.toggle('active'); updateProductList(); 
 }
+
+function toggleFavFilter(btn) {
+    isFavFilterOn = !isFavFilterOn; btn.classList.toggle('active'); updateProductList();
+}
+
+function toggleFav(name, event) {
+    event.stopPropagation();
+    if (favorites.includes(name)) { favorites = favorites.filter(n => n !== name); } 
+    else { favorites.push(name); }
+    updateProductList(); saveData();
+}
+
+function changeSort(val) { currentSort = val; updateProductList(); }
+
 function updateS(n,k,v) { statusMap[n][k] = parseFloat(v); refreshAll(); }
 function toggleDrawer(id) { const d = document.getElementById(id); d.style.display = d.style.display === 'block' ? 'none' : 'block'; }
 
@@ -453,11 +520,12 @@ function toggleAllCrops(checked) { document.querySelectorAll('#cropFilter input[
 
 function selectDay(d) {
     currentPeriod = d;
-    document.getElementById('sidebarHeader').innerText = `選擇商品加入 ${dayNames[d-1]} (週期${d})`;
+    document.getElementById('sidebarTitle').innerText = `選擇商品加入 ${dayNames[d-1]}`;
     if(isComboFilterOn && weeklySchedules[d].length === 0) { isComboFilterOn = false; document.getElementById('btnCombo').classList.remove('active'); }
     refreshAll();
 }
 
+// V17 優化: 阻止事件冒泡
 function toggleRestDay(d, event) {
     event.stopPropagation();
     if(restDays.includes(d)) { restDays = restDays.filter(x => x !== d); } 
@@ -485,6 +553,68 @@ function addBlankTime(hours) {
     refreshAll();
 }
 
+// --- 拖曳系統 ---
+let dragSrc = null;
+
+function handleDragStart(e, d, i) {
+    dragSrc = { d, i };
+    e.dataTransfer.effectAllowed = 'move';
+    setTimeout(() => e.target.classList.add('dragging'), 0);
+}
+
+function handleDragEnd(e) {
+    e.target.classList.remove('dragging');
+    document.querySelectorAll('.day-col').forEach(col => col.classList.remove('drag-over'));
+    dragSrc = null;
+}
+
+function handleDragOver(e) { e.preventDefault(); return false; }
+
+function handleDragEnter(e) {
+    e.preventDefault();
+    const col = e.currentTarget;
+    if(!col.classList.contains('rest')) col.classList.add('drag-over');
+}
+
+function handleDragLeave(e) {
+    const col = e.currentTarget;
+    if(e.relatedTarget && !col.contains(e.relatedTarget)) { col.classList.remove('drag-over'); }
+}
+
+function handleDrop(e, targetDay) {
+    e.stopPropagation();
+    const col = e.currentTarget;
+    col.classList.remove('drag-over');
+
+    if (!dragSrc) return;
+    const { d: srcDay, i: srcIdx } = dragSrc;
+    if (srcDay === targetDay) return;
+
+    if (restDays.includes(targetDay)) return alert("目標日是休息日，無法排班！");
+
+    const item = weeklySchedules[srcDay][srcIdx];
+    const currentTotal = weeklySchedules[targetDay].reduce((s, x) => s + x.time, 0);
+    if (currentTotal + item.time > 24) return alert(`時間不足！該日無法再塞入 ${item.time} 小時的商品。`);
+
+    weeklySchedules[srcDay].splice(srcIdx, 1);
+    weeklySchedules[targetDay].push(item);
+    
+    if(srcDay === currentPeriod && weeklySchedules[srcDay].length === 0 && isComboFilterOn) {
+        isComboFilterOn = false; document.getElementById('btnCombo').classList.remove('active');
+    }
+    refreshAll();
+}
+
+function moveItem(d, i, dir, e) {
+    e.stopPropagation();
+    if (i + dir < 0 || i + dir >= weeklySchedules[d].length) return;
+    const temp = weeklySchedules[d][i];
+    weeklySchedules[d][i] = weeklySchedules[d][i + dir];
+    weeklySchedules[d][i + dir] = temp;
+    refreshAll();
+}
+
+// V17 優化: 拔除內層重複賦值，直接組裝 HTML 字串
 function refreshAll() {
     let currentGroove = parseInt(document.getElementById('startGroove').value) || 0;
     const grooveLimit = parseInt(document.getElementById('landmarks').value);
@@ -493,9 +623,8 @@ function refreshAll() {
     
     let totalWeeklyRevenue = 0;
     let allMaterialsNeeded = {};
-    const cont = document.getElementById('daysContainer');
-    cont.innerHTML = "";
-
+    let daysHtml = "";
+    
     for(let d=1; d<=7; d++) {
         const schedule = weeklySchedules[d];
         const isRest = restDays.includes(d);
@@ -516,15 +645,11 @@ function refreshAll() {
                         currentGroove += numWorkshops;
                         if(currentGroove > grooveLimit) currentGroove = grooveLimit;
                     }
-                    const s = statusMap[p.name];
+                    const s = statusMap[p.name] || {pop:1, supply:1};
                     const unit = Math.floor(s.pop * s.supply * Math.floor(p.base * wsMul * (1 + currentGroove/100)));
                     val = unit * (isCombo ? 2 : 1);
                     dayRevenue += val;
-                    
-                    // V14 核心修正：精準計算數量，且連鎖不會重複扣材料！
-                    Object.entries(p.materials).forEach(([m, qty]) => { 
-                        allMaterialsNeeded[m] = (allMaterialsNeeded[m] || 0) + (qty * numWorkshops); 
-                    });
+                    Object.entries(p.materials).forEach(([m, qty]) => { allMaterialsNeeded[m] = (allMaterialsNeeded[m] || 0) + (qty * numWorkshops); });
                     lastP = p;
                 } else {
                     lastP = null;
@@ -536,17 +661,44 @@ function refreshAll() {
                 
                 if (p.isDummy) {
                     slotsHtml += `
-                        <div class="schedule-slot dummy">
-                            <div class="slot-row-1"><span class="slot-time">${st} - ${et}</span><button class="btn-del" onclick="removeFromSchedule(${d}, ${idx}, event)">×</button></div>
-                            <div class="slot-row-2"><span class="slot-name">⏳ ${p.name}</span><span class="slot-price" style="color:#888;">無產出</span></div>
-                            <div class="slot-row-3"><span class="slot-cat">(${p.time}h)</span><span class="slot-combo"></span></div>
+                        <div class="schedule-slot dummy" draggable="true" ondragstart="handleDragStart(event, ${d}, ${idx})" ondragend="handleDragEnd(event)">
+                            <div class="slot-row-1">
+                                <span class="slot-time">${st} - ${et}</span>
+                                <div class="slot-actions">
+                                    <button class="btn-move" onclick="moveItem(${d}, ${idx}, -1, event)" title="上移">▲</button>
+                                    <button class="btn-move" onclick="moveItem(${d}, ${idx}, 1, event)" title="下移">▼</button>
+                                    <button class="btn-del" onclick="removeFromSchedule(${d}, ${idx}, event)">×</button>
+                                </div>
+                            </div>
+                            <div class="slot-row-2">
+                                <span class="slot-name">⏳ ${p.name}</span>
+                                <span class="slot-price">無產出</span>
+                            </div>
+                            <div class="slot-row-3">
+                                <span class="slot-cat">(${p.time}h)</span>
+                                <span class="slot-combo"></span>
+                            </div>
                         </div>`;
                 } else {
+                    const matTooltip = "所需材料：\n" + Object.entries(p.materials).map(([m, qty]) => `${m} x${qty}`).join("\n");
                     slotsHtml += `
-                        <div class="schedule-slot">
-                            <div class="slot-row-1"><span class="slot-time">${st} - ${et}</span><button class="btn-del" onclick="removeFromSchedule(${d}, ${idx}, event)" title="刪除此商品">×</button></div>
-                            <div class="slot-row-2"><span class="slot-name">${p.name}</span><span class="slot-price" title="單間收益">$${val}</span></div>
-                            <div class="slot-row-3"><span class="slot-cat">${p.cats.join('/')}</span>${isCombo ? `<span class="slot-combo">(Combo x2)</span>` : `<span></span>`}</div>
+                        <div class="schedule-slot" draggable="true" ondragstart="handleDragStart(event, ${d}, ${idx})" ondragend="handleDragEnd(event)">
+                            <div class="slot-row-1">
+                                <span class="slot-time">${st} - ${et}</span>
+                                <div class="slot-actions">
+                                    <button class="btn-move" onclick="moveItem(${d}, ${idx}, -1, event)" title="上移">▲</button>
+                                    <button class="btn-move" onclick="moveItem(${d}, ${idx}, 1, event)" title="下移">▼</button>
+                                    <button class="btn-del" onclick="removeFromSchedule(${d}, ${idx}, event)" title="刪除此商品">×</button>
+                                </div>
+                            </div>
+                            <div class="slot-row-2">
+                                <span class="slot-name" title="${matTooltip}">${p.name}</span>
+                                <span class="slot-price" title="單間收益">$${val}</span>
+                            </div>
+                            <div class="slot-row-3">
+                                <span class="slot-cat">${p.cats.join('/')}</span>
+                                ${isCombo ? `<span class="slot-combo">(Combo x2)</span>` : `<span></span>`}
+                            </div>
                         </div>`;
                 }
             });
@@ -555,56 +707,49 @@ function refreshAll() {
             slotsHtml = `<div style="text-align:center; padding:20px 0; color:#666; font-size:14px; font-weight:bold;">本日公休</div>`;
         }
         
+        // V18 修復核心：紀錄「當前選中之星期」在排完所有班表後的最終氣勢，供右邊選單預覽使用
+        if (d === currentPeriod) {
+            currentCachedGroove = currentGroove;
+        }
+
         let dayTotalRevenue = dayRevenue * numWorkshops;
         totalWeeklyRevenue += dayTotalRevenue;
 
-        cont.innerHTML += `
-            <div class="day-col ${isActive?'active':''} ${isRest?'rest':''}" onclick="selectDay(${d})">
+        daysHtml += `
+            <div class="day-col ${isActive?'active':''} ${isRest?'rest':''}" onclick="selectDay(${d})" 
+                 ondragover="handleDragOver(event)" ondragenter="handleDragEnter(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, ${d})">
                 <div class="day-header">
                     <div>${dayNames[d-1]}</div>
-                    <div class="day-sub"><span>週期 ${d}</span><label onclick="event.stopPropagation()"><input type="checkbox" ${isRest?'checked':''} onchange="toggleRestDay(${d}, event)"> 休</label></div>
+                    <div class="day-sub"><span>週期 ${d}</span><label onclick="event.stopPropagation()"><input type="checkbox" ${isRest?'checked':''} onclick="toggleRestDay(${d}, event)"> 休</label></div>
                 </div>
                 <div class="day-revenue">
                     <span style="font-size:11px;">${isRest?'':'<button class="btn-clear-day" onclick="clearDay('+d+', event)" title="清空本日班表">🗑️</button>'}</span>
-                    <span title="已乘上工坊數量">預估: $${dayTotalRevenue} <span style="color:#ff9900; font-size:12px;" title="結算氣勢">(${currentGroove})</span></span>
+                    <span title="已乘上工坊數量">預估: $${dayTotalRevenue} <span style="color:#ff9900; font-size:12px;" title="結算氣勢/上限">(${currentGroove}/${grooveLimit})</span></span>
                 </div>
                 <div class="slot-list">${slotsHtml}</div>
             </div>`;
     }
 
+    document.getElementById('daysContainer').innerHTML = daysHtml;
     document.getElementById('finalWeeklyResult').innerText = `全週預計總收益: ${totalWeeklyRevenue}`;
+    
+    // V18 修復：無需再傳參數，直接取用全域 cached 變數
     updateProductList(); 
     renderMaterialList(allMaterialsNeeded);
     saveData(); 
 }
 
+// V18 修復：改為直接取用全域 currentCachedGroove
 function updateProductList() {
-    let startGr = parseInt(document.getElementById('startGroove').value) || 0;
     const ws = parseFloat(document.getElementById('wsLevel').value);
     const numWorkshops = parseInt(document.getElementById('numWorkshops').value) || 3;
     const grooveLimit = parseInt(document.getElementById('landmarks').value);
     
-    let grooveForDisplay = startGr;
-    for(let d=1; d<=currentPeriod; d++) {
-        if(!restDays.includes(d)) {
-            let lastP = null;
-            weeklySchedules[d].forEach(p => {
-                if (!p.isDummy) {
-                    if(lastP && !lastP.isDummy && p.name !== lastP.name && p.cats.some(c => lastP.cats.includes(c))) {
-                        grooveForDisplay += numWorkshops;
-                        if(grooveForDisplay > grooveLimit) grooveForDisplay = grooveLimit;
-                    }
-                    lastP = p;
-                } else { lastP = null; }
-            });
-        }
-    }
+    let grooveForDisplay = currentCachedGroove;
 
     const rank = parseInt(document.getElementById('userRank').value) || 1;
     const ex = Array.from(document.querySelectorAll('#livestockFilter input[type="checkbox"]:checked, #cropFilter input[type="checkbox"]:checked')).map(c => c.value);
-    const list = document.getElementById('productList');
-    list.innerHTML = "";
-
+    
     const sched = weeklySchedules[currentPeriod];
     let lastItem = null;
     if (sched.length > 0) {
@@ -612,14 +757,16 @@ function updateProductList() {
         if (lastItem.isDummy) lastItem = null; 
     }
 
+    let renderList = [];
+
     products.forEach(p => {
-        // V14 核心修正：使用 Object.keys 來讀取材料並進行過濾
         if (p.level > rank || Object.keys(p.materials).some(m => ex.includes(m))) return;
         if (currentCat !== '全部' && !p.cats.includes(currentCat)) return;
-        if (currentTimeLimit !== '全部' && p.time !== currentTimeLimit) return;
+        if (!currentTimeLimits.includes('全部') && !currentTimeLimits.includes(p.time)) return;
         
         let isComboMatch = lastItem && !lastItem.isDummy && (p.name !== lastItem.name) && p.cats.some(c => lastItem.cats.includes(c));
         if (isComboFilterOn && !isComboMatch) return;
+        if (isFavFilterOn && !favorites.includes(p.name)) return;
         
         let previewGroove = grooveForDisplay;
         if(isComboMatch) {
@@ -627,14 +774,25 @@ function updateProductList() {
             if(previewGroove > grooveLimit) previewGroove = grooveLimit;
         }
 
-        const s = statusMap[p.name];
+        const s = statusMap[p.name] || {pop: 1, supply: 1};
         const est = Math.floor(s.pop * s.supply * Math.floor(p.base * ws * (1 + previewGroove/100)));
-        const div = document.createElement('div');
-        div.className = 'product-item';
-        
-        div.innerHTML = `
+        renderList.push({ p, est, isComboMatch, s });
+    });
+
+    if (currentSort === 'priceDesc') renderList.sort((a, b) => b.est - a.est);
+    else if (currentSort === 'priceAsc') renderList.sort((a, b) => a.est - b.est);
+
+    // V17 優化: 一次性字串賦值
+    document.getElementById('productList').innerHTML = renderList.map(item => {
+        const { p, est, isComboMatch, s } = item;
+        const isFav = favorites.includes(p.name);
+        return `
+        <div class="product-item">
             <div class="pi-row-1">
-                <span class="pi-name">${p.name} <span class="pi-time">(${p.time}h)</span></span>
+                <span class="pi-name">
+                    <span class="btn-star ${isFav ? 'fav-active' : ''}" onclick="toggleFav('${p.name}', event)" title="加入/移除最愛">${isFav ? '★' : '☆'}</span>
+                    ${p.name} <span class="pi-time">(${p.time}h)</span>
+                </span>
                 <span class="p-final-price" title="單間工坊預估">$${est}</span>
             </div>
             <div class="pi-row-2">
@@ -659,9 +817,8 @@ function updateProductList() {
                 </div>
                 <button class="btn-add" onclick="addToSchedule('${p.name}')">加入</button>
             </div>
-        `;
-        list.appendChild(div);
-    });
+        </div>`;
+    }).join('');
 }
 
 function addToSchedule(name) {
@@ -712,14 +869,20 @@ function exportMarketCode() {
 
 function importMarketCode() {
     try {
-        const inputCode = document.getElementById('codeArea').value;
+        const inputCode = document.getElementById('codeArea').value.trim();
         if (!inputCode) return alert("請先貼上代碼！");
-        const data = JSON.parse(b64_to_utf8(inputCode));
-        if(data.market) {
-            statusMap = data.market; refreshAll(); 
+        
+        let data;
+        try { data = JSON.parse(b64_to_utf8(inputCode)); } catch(e) { data = JSON.parse(inputCode); }
+        
+        if(data && data.market && data.market["恢復藥"]) {
+            Object.keys(data.market).forEach(k => { if(statusMap[k]) statusMap[k] = data.market[k]; });
+            refreshAll(); 
             if (document.getElementById('batchOverlay').style.display === 'flex') { renderBatchPanel(); }
-            alert("市場供需匯入成功！");
-        } else { alert("無效的代碼格式！這可能不是市場供需代碼。"); }
+            alert("市場行情匯入成功！");
+        } else {
+            alert("這不是有效的專屬供需代碼！\n(可能拿到國外網站的代碼了，請使用本工具生成的代碼進行交流)");
+        }
     } catch(e) { alert("代碼解析失敗，請確認代碼是否複製完整或格式正確！"); console.error(e); }
 }
 

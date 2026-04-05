@@ -38,11 +38,7 @@
         .days-container { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; overflow-x: auto; padding-bottom: 5px; }
         
         @media (max-width: 1400px) { .days-container { grid-template-columns: repeat(7, minmax(220px, 1fr)); } }
-        @media (max-width: 1024px) {
-            .main-layout { grid-template-columns: 1fr; }
-            .days-container { grid-template-columns: repeat(7, minmax(260px, 1fr)); }
-            .product-sidebar { max-height: 600px; margin-top: 15px; }
-        }
+        @media (max-width: 1024px) { .main-layout { grid-template-columns: 1fr; } .days-container { grid-template-columns: repeat(7, minmax(260px, 1fr)); } .product-sidebar { max-height: 600px; margin-top: 15px; } }
 
         .day-col { background: #222; border: 2px solid #444; border-radius: 6px; display: flex; flex-direction: column; min-height: 650px; cursor: pointer; transition: all 0.2s; }
         .day-col.active { border-color: #ffd700; box-shadow: 0 0 10px rgba(255,215,0,0.3); background: #262626; }
@@ -64,7 +60,6 @@
         
         .slot-row-1 { display: flex; justify-content: space-between; align-items: center; }
         .slot-time { color: #88aadd; font-family: monospace; font-size: 13px; font-weight: bold; letter-spacing: 0.5px; }
-        
         .slot-actions { display: flex; align-items: center; gap: 3px; }
         .btn-move { background: none; border: none; color: #88aadd; font-size: 12px; cursor: pointer; padding: 2px 4px; border-radius: 3px; }
         .btn-move:hover { background: #555; color: #fff; }
@@ -76,7 +71,6 @@
         .slot-price { color: #00ff00; font-size: 15px; font-weight: bold; }
         .schedule-slot.dummy .slot-price { color: #555; }
         .schedule-slot.dummy .slot-name { color: #888; border-bottom: none; cursor: grab; }
-        
         .slot-row-3 { display: flex; justify-content: space-between; align-items: center; }
         .slot-cat { font-size: 11px; color: #999; }
         .slot-combo { color: #ff9900; font-size: 12px; font-weight: bold; }
@@ -116,16 +110,16 @@
         .mat-title { width: 90px; font-weight: bold; font-size: 14px; }
 
         .modal-overlay { display: none; position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.85); z-index: 999; align-items: center; justify-content: center; }
-        .batch-modal { width: 95%; max-width: 1500px; height: 90vh; background: #1e1e1e; border-radius: 8px; border: 2px solid #ffd700; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.9); }
+        .batch-modal { width: 95%; max-width: 900px; height: 90vh; background: #1e1e1e; border-radius: 8px; border: 2px solid #ffd700; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.9); }
         .batch-header { background: #333; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #555; }
         .batch-filters { padding: 12px 20px; background: #262626; border-bottom: 1px solid #444; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-        .batch-content { flex: 1; overflow-y: auto; padding: 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 15px; align-content: start; }
-        .batch-item { background: #2a2a2a; border: 1px solid #444; padding: 12px; border-radius: 6px; }
-        .batch-item-name { font-weight: bold; color: #eee; font-size: 15px; margin-bottom: 8px; display: flex; justify-content: space-between; }
-        .batch-item-rank { font-size: 11px; color: #888; font-weight: normal; }
-        .batch-controls { display: flex; flex-direction: column; gap: 8px; }
+        .batch-content { flex: 1; overflow-y: auto; padding: 10px 15px; display: flex; flex-direction: column; gap: 6px; }
+        .batch-item { background: #2a2a2a; border: 1px solid #444; padding: 8px 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; }
+        .batch-item-name { font-weight: bold; color: #eee; font-size: 13px; min-width: 130px; width: 130px; display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+        .batch-item-rank { font-size: 10px; color: #888; font-weight: normal; white-space: nowrap; }
+        .batch-controls { display: flex; gap: 8px; align-items: center; flex: 1; }
         .bc-row { display: flex; }
-        .btn-radio { padding: 6px 0; border: 1px solid #555; background: #222; color: #aaa; cursor: pointer; font-size: 13px; font-weight: bold; flex: 1; text-align: center; transition: 0.1s; }
+        .btn-radio { padding: 4px 0; border: 1px solid #555; background: #222; color: #aaa; cursor: pointer; font-size: 12px; font-weight: bold; flex: 1; text-align: center; transition: 0.1s; min-width: 40px; }
         .btn-radio:first-child { border-radius: 4px 0 0 4px; border-right: none; }
         .btn-radio:last-child { border-radius: 0 4px 4px 0; border-left: none; }
         .btn-radio:not(:first-child):not(:last-child) { border-right: none; }
@@ -141,6 +135,64 @@
         .sup-10 { background: #555 !important; color: #fff !important; border-color: #777 !important; }
         .sup-08 { background: #3377cc !important; color: #fff !important; border-color: #55aaff !important; }
         .sup-06 { background: #0044aa !important; color: #fff !important; border-color: #0066ff !important; }
+
+        /* V19 多選拖曳系統 */
+        .schedule-slot.selected { outline: 2px solid #00ccff; outline-offset: -2px; background: #2a3040; }
+        .schedule-slot.selected::after { content: '✓'; position: absolute; top: 4px; right: 8px; color: #00ccff; font-size: 11px; font-weight: bold; }
+        .select-hint { font-size: 11px; color: #666; text-align: center; padding: 4px; }
+        .btn-move-all { background: none; border: 1px solid #88aadd; color: #88aadd; font-size: 11px; padding: 2px 8px; border-radius: 3px; cursor: pointer; white-space: nowrap; }
+        .btn-move-all:hover { background: #88aadd; color: #000; }
+        .multi-actions { display: flex; gap: 5px; align-items: center; justify-content: center; padding: 6px 8px; border-top: 1px dashed #444; background: #1e1e1e; }
+        .btn-multi { padding: 3px 10px; font-size: 11px; border-radius: 4px; cursor: pointer; border: 1px solid #555; background: #333; color: #ccc; }
+        .btn-multi:hover { background: #555; color: #fff; }
+        .btn-multi.danger { border-color: #f44; color: #f44; }
+        .btn-multi.danger:hover { background: #f44; color: #fff; }
+
+        /* V19 拖曳標籤系統 */
+        .drag-tag { padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: bold; cursor: grab; user-select: none; text-align: center; min-width: 28px; transition: transform 0.1s, box-shadow 0.1s; }
+        .drag-tag:active { cursor: grabbing; transform: scale(1.1); }
+        .drag-tag:hover { box-shadow: 0 0 8px rgba(255,255,255,0.2); }
+        .tag-clear { background: #333; border: 1px dashed #666; color: #888; }
+        .tag-arr-4 { background: #cc3333; color: #fff; }
+        .tag-arr-3 { background: #cc8833; color: #fff; }
+        .tag-arr-2 { background: #666; color: #ddd; }
+        .tag-arr-1 { background: #3366aa; color: #fff; }
+        .tag-arr-0 { background: #2244aa; color: #fff; }
+
+        .drop-cell { min-width: 34px; height: 26px; display: flex; align-items: center; justify-content: center; border-radius: 3px; font-size: 11px; font-weight: bold; border: 1px dashed #555; background: #2a2a2a; cursor: default; transition: 0.15s; }
+        .drop-cell.drag-hover { border-color: #00ff88; background: #1a3a1a; box-shadow: 0 0 6px rgba(0,255,136,0.4); }
+        .drop-cell.filled { border-style: solid; cursor: default; }
+        .drop-cell.predicted { opacity: 0.5; border-style: dotted; }
+
+        /* V19 趨勢面板 */
+        .trend-badge { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 11px; font-weight: bold; margin-left: 5px; }
+        .trend-strong { background: #cc0000; color: #fff; }
+        .trend-weak { background: #cc7700; color: #fff; }
+        .trend-unknown { background: #555; color: #aaa; }
+        .trend-peak { border-left-color: #c8a84e !important; box-shadow: inset 0 0 0 1px rgba(200,168,78,0.25); }
+        @keyframes peakPulse { }
+
+        .trend-panel { background: #1a1a1a; border: 1px dashed #555; padding: 15px; border-radius: 6px; margin-top: 10px; }
+        .trend-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 8px; max-height: 600px; overflow-y: auto; padding: 5px; }
+        .trend-item { background: #2a2a2a; border: 1px solid #3d3d3d; border-radius: 4px; padding: 8px 10px; display: flex; align-items: center; gap: 8px; font-size: 13px; }
+        .trend-item-name { font-weight: bold; color: #eee; min-width: 90px; }
+        .trend-item-days { display: flex; gap: 3px; flex: 1; }
+        .trend-day-cell { width: 28px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; border-radius: 3px; }
+        .td-0box { background: #cc0000; color: #fff; }
+        .td-1box { background: #cc7700; color: #fff; }
+        .td-2box { background: #555; color: #ddd; }
+        .td-3box { background: #334; color: #88a; }
+        .td-4box { background: #223; color: #668; }
+        .trend-select { background: #3d3d3d; color: #fff; border: 1px solid #666; padding: 2px 4px; border-radius: 3px; font-size: 12px; }
+
+        .trend-input-row { display: flex; align-items: center; gap: 4px; }
+        .trend-input-row select { font-size: 11px; padding: 2px; min-width: 42px; }
+
+        .pop-badge { display: inline-block; padding: 1px 5px; border-radius: 3px; font-size: 10px; font-weight: bold; margin-left: 3px; }
+        .pop-very-high { background: #ff4466; color: #fff; }
+        .pop-high { background: #ff9900; color: #000; }
+        .pop-normal { background: #555; color: #ccc; }
+        .pop-low { background: #333; color: #666; }
     </style>
 </head>
 <body>
@@ -169,9 +221,64 @@
         <div class="result-box" id="finalWeeklyResult">全週預計總收益: 0</div>
         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
             <button class="btn-filter" style="border-color:#0bf; color:#0bf; padding:6px 15px; font-size:14px;" onclick="toggleBatchPanel()">⚙️ 批次市場設定</button>
+            <button class="btn-filter" style="border-color:#00cc88; color:#00cc88; padding:6px 15px; font-size:14px;" onclick="toggleTrendPanel()">📈 趨勢預測</button>
             <button class="btn-filter" style="padding:6px 15px; font-size:14px;" onclick="toggleDrawer('materialDrawer')">📦 材料清單</button>
             <button class="btn-filter" style="border-color:#ff9900; color:#ff9900; padding:6px 15px; font-size:14px;" onclick="toggleDrawer('codeDrawer')">💾 供需代碼分享</button>
             <button onclick="clearWeekly()" style="background:#800; color:white; border:none; padding:6px 15px; border-radius:4px; cursor:pointer; font-size:14px;">重設整週班表</button>
+        </div>
+    </div>
+
+    <!-- V20: 趨勢預測彈出視窗 -->
+    <div id="trendOverlay" class="modal-overlay" onclick="if(event.target===this) toggleTrendPanel()">
+        <div class="batch-modal" style="border-color:#00cc88; max-width:580px;">
+            <div class="batch-header" style="flex-wrap:wrap; gap:8px;">
+                <h2 style="margin:0; color:#00cc88; font-size:18px;">📈 供需趨勢預測 (拖曳標籤到格子裡，自動推算趨勢)</h2>
+                <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                    <button class="btn-filter" style="border-color:#00cc88; color:#00cc88;" onclick="autoApplyTrends()">🎯 套用至供需</button>
+                    <button class="btn-filter" onclick="clearAllTrends()">清空趨勢</button>
+                    <button class="btn-filter" style="border-color:#ff9900; color:#ff9900;" onclick="document.getElementById('trendImportArea2').style.display=document.getElementById('trendImportArea2').style.display==='block'?'none':'block'">匯入社群資料</button>
+                    <button class="btn-filter" style="background:#ff4444; color:#fff; border:none; font-size:14px; padding:6px 15px;" onclick="toggleTrendPanel()">完成並關閉</button>
+                </div>
+            </div>
+            <div id="trendImportArea2" style="display:none; padding:10px 20px; background:#262626; border-bottom:1px solid #444;">
+                <div style="font-size:12px; color:#aaa; margin-bottom:6px;">支援：① JSON <code>{"商品名":"5強",...}</code>　② 支援 URL <code>island.ffxiv.cyou/#/pat/...</code></div>
+                <textarea id="trendImportCode" style="width:100%; height:50px; background:#222; color:#0f0; border:1px solid #444; padding:5px; font-family:monospace; margin-bottom:6px; font-size:12px;" placeholder='貼上 JSON 或 URL...' oninput="detectImportFormat()"></textarea>
+                <div id="importFormatHint" style="font-size:11px; color:#666; margin-bottom:4px;"></div>
+                <button class="btn-filter" style="background:#ff9900; color:#000; border-color:#ff9900;" onclick="importTrendData()">匯入趨勢</button>
+                <button class="btn-filter" onclick="exportTrendData()">匯出當前趨勢</button>
+            </div>
+            <div class="batch-filters" style="flex-direction:column; gap:6px; padding:10px 20px;">
+                <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                    <span class="filter-label">依時間尋找:</span>
+                    <div id="trendTimeFilters" class="btn-group">
+                        <button class="btn-filter active" onclick="filterTrendTime('全部',this)">全部</button>
+                        <button class="btn-filter" onclick="filterTrendTime(4,this)">4 小時</button>
+                        <button class="btn-filter" onclick="filterTrendTime(6,this)">6 小時</button>
+                        <button class="btn-filter" onclick="filterTrendTime(8,this)">8 小時</button>
+                    </div>
+                    <div class="drag-tag trend-strong" style="font-size:11px;padding:2px 8px;" draggable="true" ondragstart="tagDragStart(event,'trend','strong')">強峰</div>
+                    <div class="drag-tag trend-weak" style="font-size:11px;padding:2px 8px;" draggable="true" ondragstart="tagDragStart(event,'trend','weak')">弱峰</div>
+                </div>
+                <div style="display:flex; align-items:center; gap:4px;">
+                    <span style="font-size:11px; color:#888; font-weight:bold; min-width:36px;">箱數:</span>
+                    <div class="drag-tag td-0box" style="font-size:11px;padding:2px 8px;" draggable="true" ondragstart="tagDragStart(event,'box',0)">0箱</div>
+                    <div class="drag-tag td-1box" style="font-size:11px;padding:2px 8px;" draggable="true" ondragstart="tagDragStart(event,'box',1)">1箱</div>
+                    <div class="drag-tag td-2box" style="font-size:11px;padding:2px 8px;" draggable="true" ondragstart="tagDragStart(event,'box',2)">2箱</div>
+                    <div class="drag-tag td-3box" style="font-size:11px;padding:2px 8px;" draggable="true" ondragstart="tagDragStart(event,'box',3)">3箱</div>
+                    <div class="drag-tag td-4box" style="font-size:11px;padding:2px 8px;" draggable="true" ondragstart="tagDragStart(event,'box',4)">4箱</div>
+                    <div class="drag-tag tag-clear" style="font-size:11px;padding:2px 8px;" draggable="true" ondragstart="tagDragStart(event,'box',-1)">✕清</div>
+                </div>
+                <div style="display:flex; align-items:center; gap:4px;">
+                    <span style="font-size:11px; color:#888; font-weight:bold; min-width:36px;">箭頭:</span>
+                    <div class="drag-tag tag-arr-4" style="font-size:11px;padding:2px 8px;" draggable="true" ondragstart="tagDragStart(event,'arr',4)">⇈</div>
+                    <div class="drag-tag tag-arr-3" style="font-size:11px;padding:2px 8px;" draggable="true" ondragstart="tagDragStart(event,'arr',3)">↑</div>
+                    <div class="drag-tag tag-arr-2" style="font-size:11px;padding:2px 8px;" draggable="true" ondragstart="tagDragStart(event,'arr',2)">→</div>
+                    <div class="drag-tag tag-arr-1" style="font-size:11px;padding:2px 8px;" draggable="true" ondragstart="tagDragStart(event,'arr',1)">↓</div>
+                    <div class="drag-tag tag-arr-0" style="font-size:11px;padding:2px 8px;" draggable="true" ondragstart="tagDragStart(event,'arr',0)">⇊</div>
+                    <div class="drag-tag tag-clear" style="font-size:11px;padding:2px 8px;" draggable="true" ondragstart="tagDragStart(event,'arr',-1)">✕清</div>
+                </div>
+            </div>
+            <div style="flex:1; overflow-y:auto; padding:10px; display:flex; flex-direction:column; gap:8px;" id="trendGrid"></div>
         </div>
     </div>
 
@@ -204,7 +311,7 @@
             <div>工坊等級: <select id="wsLevel" onchange="refreshAll()"><option value="1.0">Lv1</option><option value="1.1">Lv2</option><option value="1.2">Lv3</option><option value="1.3">Lv4</option><option value="1.4" selected>Lv5 (1.4x)</option></select></div>
             <div>地標: <select id="landmarks" onchange="refreshAll()"><option value="10">0個</option><option value="15">1個</option><option value="20">2個</option><option value="25">3個</option><option value="35">4個</option><option value="45" selected>5個 (45)</option></select></div>
             <div>初始氣勢(週二): <input type="number" id="startGroove" value="0" min="0" max="45" style="width: 40px;" onchange="refreshAll()"></div>
-            <div style="margin-left: auto; color: #888; font-size: 12px;">✅ 支援卡片拖曳跨日＆同日上下調換順序</div>
+            <div style="margin-left: auto; color: #888; font-size: 12px;">✅ 拖曳跨日 / Ctrl+點擊多選 / 整列搬移 / 趨勢預測</div>
         </div>
 
         <details style="margin-bottom: 8px;" id="filterDetails">
@@ -239,14 +346,13 @@
 
     <div class="main-layout">
         <div class="days-container" id="daysContainer"></div>
-        
         <div class="product-sidebar">
             <div class="sidebar-header">
-                <span id="sidebarTitle">選擇商品加入 星期二</span>
-                <select id="sortSelect" onchange="changeSort(this.value)" style="background:#1a1a1a; color:#ffd700; border:1px solid #555; border-radius:4px; padding:2px 5px; font-weight:bold; cursor:pointer;">
-                    <option value="default">預設排序</option>
-                    <option value="priceDesc">價格：高到低</option>
-                    <option value="priceAsc">價格：低到高</option>
+                <span id="sidebarTitle">選擇商品加入 星期四</span>
+                <select id="sortSelect" onchange="changeSort(this.value)" style="background:#1a1a1a; color:#ffd700; border:1px solid #555; border-radius:4px; padding:2px 5px; font-weight:bold;">
+                    <option value="priceDesc">預設排序</option>
+                    <option value="timeDesc">時間：長到短</option>
+                    <option value="timeAsc">時間：短到長</option>
                 </select>
             </div>
             <div class="dummy-add-row">
@@ -263,7 +369,7 @@
 </div>
 
 <script>
-// --- 資料庫 ---
+// === 資料庫 ===
 const rareMats = ["香薺", "石榴石原石", "雲杉原木", "錘頭鯊", "銀礦", "長臂蝦"];
 const livestock = ["絨毛", "乳汁", "尖爪", "獸毛", "鳥蛋", "尖牙", "甲殼", "羽毛", "角片"];
 const crops = ["甘藍", "南瓜", "新薯", "高山蘿蔔", "莓果", "洋蔥", "番茄", "小麥", "玉米", "小蘿蔔", "紅辣椒", "韭蔥", "花豆", "紅菜", "茄子", "西葫蘆", "西瓜", "甜新薯", "西蘭花", "水牛豆"];
@@ -271,7 +377,7 @@ const dayNames = ["星期二", "星期三", "星期四", "星期五", "星期六
 const allCategories = ['藥品', '家具', '木工', '菜餚', '海產', '飾品', '防具', '金屬', '武器', '耐儲食', '紡織', '動物', '調料', '點心', '日用品', '窯爐'];
 
 const products = [
-    { name: "恢復藥", level: 1, base: 28, time: 4, cats: ["藥品"], materials: {"棕櫚葉":2, "草葉":2} },
+    { name: "治療劑", level: 1, base: 28, time: 4, cats: ["藥品"], materials: {"棕櫚葉":2, "草葉":2} },
     { name: "火藥", level: 1, base: 28, time: 4, cats: ["藥品", "窯爐"], materials: {"砂礫":2, "石灰岩":1, "草葉":1} },
     { name: "座椅", level: 1, base: 42, time: 6, cats: ["家具", "木工"], materials: {"原木":4, "藤蔓":2} },
     { name: "烤扇貝", level: 1, base: 28, time: 4, cats: ["菜餚", "海產"], materials: {"雙殼貝":2, "海藻":2} },
@@ -354,21 +460,100 @@ const products = [
     { name: "水牛豆沙拉", level: 18, base: 52, time: 4, cats: ["菜餚", "動物"], materials: {"乳汁":2, "水牛豆":2} }
 ];
 
-// --- 狀態變數 ---
+// === V18 趨勢預測核心引擎 ===
+const TREND_NAMES = ["2強","2弱","3強","3弱","4強","4弱","5強","5弱","6強","6弱","7強","7弱"];
+// 12種趨勢的真實需求值表 (Day1~Day7)，從模擬器原始碼逆向
+const DEMAND_TABLE = [
+    [16,24, 9, 9, 9, 9, 9], // 2強
+    [13,17, 7, 7, 7, 7, 7], // 2弱
+    [ 9,16,24, 9, 9, 9, 9], // 3強
+    [ 9,13,17, 7, 7, 7, 7], // 3弱
+    [ 9, 9,16,24, 9, 9, 9], // 4強
+    [ 9, 9,13,17, 7, 7, 7], // 4弱
+    [ 9, 9, 9,16,24, 9, 9], // 5強
+    [ 9, 9, 9,13,17, 7, 7], // 5弱
+    [ 9,10, 2, 9,16,24, 9], // 6強
+    [ 9,10, 5, 8,13,17, 7], // 6弱
+    [ 9,10, 2, 2, 9,16,24], // 7強
+    [ 9,10, 2, 5, 8,13,17], // 7弱
+];
+
+// 需求值 -> 箱數
+function demandToBoxes(val) {
+    if (val >= 18) return 0;
+    if (val >= 10) return 1;
+    if (val >= 2) return 2;
+    if (val >= -6) return 3;
+    return 4;
+}
+
+// 需求值差 -> 箭頭 (0=⬇⬇, 1=⬇, 2=→, 3=⬆, 4=⬆⬆)
+function deltaToArrow(delta) {
+    if (delta >= 6) return 4;
+    if (delta >= 1) return 3;
+    if (delta === 0) return 2;
+    if (delta >= -5) return 1;
+    return 0;
+}
+const ARROW_SYMBOLS = ['⇊','↓','→','↑','⇈'];
+const ARROW_COLORS = ['#4466ff','#6688cc','#999','#cc8833','#cc3333'];
+
+// 根據觀測序列推算可能的趨勢
+function predictPattern(observations) {
+    // observations: [{boxes: 0-4, arrow: 0-4}, ...] 從Day1開始
+    if (!observations || observations.length === 0) return { candidates: Array.from({length:12}, (_,i) => i), confirmed: null };
+    
+    let candidates = Array.from({length:12}, (_,i) => i);
+    
+    for (let dayIdx = 0; dayIdx < observations.length; dayIdx++) {
+        const obs = observations[dayIdx];
+        if (obs.boxes === -1 && obs.arrow === -1) continue; // 未填寫
+        
+        candidates = candidates.filter(c => {
+            const realDemand = DEMAND_TABLE[c][dayIdx];
+            const boxes = demandToBoxes(realDemand);
+            if (obs.boxes !== -1 && boxes !== obs.boxes) return false;
+            
+            if (obs.arrow !== -1 && dayIdx > 0) {
+                const prevDemand = DEMAND_TABLE[c][dayIdx - 1];
+                const delta = realDemand - prevDemand;
+                if (deltaToArrow(delta) !== obs.arrow) return false;
+            }
+            return true;
+        });
+    }
+    
+    return {
+        candidates,
+        confirmed: candidates.length === 1 ? candidates[0] : null
+    };
+}
+
+// 取得某趨勢某天的供給係數
+function getTrendSupplyMul(patternIdx, dayIdx) {
+    const boxes = demandToBoxes(DEMAND_TABLE[patternIdx][dayIdx]);
+    return [1.6, 1.3, 1.0, 0.8, 0.6][boxes];
+}
+
+// === 狀態變數 ===
 let weeklySchedules = { 1:[], 2:[], 3:[], 4:[], 5:[], 6:[], 7:[] };
 let restDays = [1, 2];
-let currentPeriod = 3; 
+let currentPeriod = 3; // V18 fix: 預設選到第一個非休息日
 let currentCat = '全部';
-let currentTimeLimits = ['全部']; 
+let currentTimeLimits = ['全部'];
 let isComboFilterOn = false;
 let isFavFilterOn = false;
-let currentSort = 'default';
-let batchCurrentTime = '全部'; 
-let favorites = []; 
-let statusMap = {}; 
-// V18 修復：新增全域變數，紀錄目前預覽的基礎氣勢
-let currentCachedGroove = 0; 
+let currentSort = 'priceDesc';
+let batchCurrentTime = '全部';
+let trendTimeFilter = '全部';
+let favorites = [];
+let statusMap = {};
+let _cachedGroove = 0; // V18 fix: 快取groove避免重複計算
 products.forEach(p => statusMap[p.name] = { pop: 1.0, supply: 1.0 });
+
+// V18: 趨勢觀測資料 { 商品名: { pattern: null|0-11, obs: [{boxes:-1,arrow:-1},...], pop: 1.0 } }
+let trendData = {};
+products.forEach(p => trendData[p.name] = { pattern: null, obs: [], pop: 1.0 });
 
 function formatTime(hours) { return (hours % 24).toString().padStart(2, '0') + ':00'; }
 function utf8_to_b64(str) { return window.btoa(unescape(encodeURIComponent(str))); }
@@ -381,10 +566,7 @@ function saveData() {
         wsLevel: document.getElementById('wsLevel').value,
         landmarks: document.getElementById('landmarks').value,
         startGroove: document.getElementById('startGroove').value,
-        weeklySchedules: weeklySchedules,
-        restDays: restDays,
-        statusMap: statusMap,
-        favorites: favorites
+        weeklySchedules, restDays, statusMap, favorites, trendData
     };
     localStorage.setItem('ff14IslandConfig', JSON.stringify(data));
 }
@@ -403,48 +585,338 @@ function loadData() {
             if(data.restDays) restDays = data.restDays;
             if(data.favorites) favorites = data.favorites;
             if(data.statusMap) { Object.keys(data.statusMap).forEach(k => { if(statusMap[k]) statusMap[k] = data.statusMap[k]; }); }
+            if(data.trendData) { Object.keys(data.trendData).forEach(k => { if(trendData[k]) trendData[k] = data.trendData[k]; }); }
+            if(data.currentPeriod) currentPeriod = data.currentPeriod;
         } catch(e) { console.error("載入失敗", e); }
     }
 }
 
-// V17 優化: 移除迴圈內的 DOM 操作
 function init() {
     loadData();
-    
     document.getElementById('livestockFilter').innerHTML = livestock.map(i => `<div class="checkbox-item"><input type="checkbox" value="${i}" onchange="refreshAll()"> ${i}</div>`).join('');
     document.getElementById('cropFilter').innerHTML = crops.map(i => `<div class="checkbox-item"><input type="checkbox" value="${i}" onchange="refreshAll()"> ${i}</div>`).join('');
-    
-    const catHtml = `<button class="btn-filter active" onclick="filterByCat('全部', this)">全部</button>` + 
-                    allCategories.map(c => `<button class="btn-filter" onclick="filterByCat('${c}', this)">${c}</button>`).join('');
-    document.getElementById('catFilters').innerHTML = catHtml;
-
+    document.getElementById('catFilters').innerHTML = `<button class="btn-filter active" onclick="filterByCat('全部', this)">全部</button>` + allCategories.map(c => `<button class="btn-filter" onclick="filterByCat('${c}', this)">${c}</button>`).join('');
+    renderTrendGrid();
     refreshAll();
 }
 
+// === V19 趨勢面板：拖曳模塊版 ===
+const BOX_LABELS = ['0箱','1箱','2箱','3箱','4箱'];
+const BOX_CLASSES = ['td-0box','td-1box','td-2box','td-3box','td-4box'];
+let _tagDrag = null;
+function tagDragStart(e, type, value) { _tagDrag = {type, value}; e.dataTransfer.effectAllowed='copy'; e.dataTransfer.setData('text/plain',`${type}:${value}`); }
+function cellDragOver(e) { e.preventDefault(); e.currentTarget.classList.add('drag-hover'); }
+function cellDragLeave(e) { e.currentTarget.classList.remove('drag-hover'); }
+function cellDrop(e, name, dayIdx, cellType) {
+    e.preventDefault(); e.stopPropagation(); e.currentTarget.classList.remove('drag-hover');
+    if (!_tagDrag) return; ensureObs(name);
+    const {type, value} = _tagDrag;
+    if (type==='box' && cellType==='box') { trendData[name].obs[dayIdx].boxes = value; }
+    else if (type==='arr' && cellType==='arr') { trendData[name].obs[dayIdx].arrow = value; }
+    else if (type==='trend') { const pk=dayIdx+1; if(pk<2)return; const pi=value==='strong'?(pk-2)*2:(pk-2)*2+1; if(pi>=0&&pi<12) trendData[name].pattern=pi; renderTrendGrid(); saveData(); return; }
+    else { return; }
+    trendData[name].pattern = null;
+    const result = predictPattern(trendData[name].obs);
+    if (result.confirmed !== null) trendData[name].pattern = result.confirmed;
+    renderTrendGrid(); saveData();
+}
+function cellRightClick(e, name, dayIdx, cellType) {
+    e.preventDefault(); ensureObs(name);
+    if (cellType==='box') trendData[name].obs[dayIdx].boxes=-1; else trendData[name].obs[dayIdx].arrow=-1;
+    trendData[name].pattern = null;
+    const result = predictPattern(trendData[name].obs);
+    if (result.confirmed !== null) trendData[name].pattern = result.confirmed;
+    renderTrendGrid(); saveData();
+}
+
+function ensureObs(name) {
+    if (!trendData[name].obs || trendData[name].obs.length < 7) {
+        trendData[name].obs = Array.from({length:7}, (_,i) => (trendData[name].obs && trendData[name].obs[i]) || {boxes:-1,arrow:-1});
+    }
+}
+function toggleTrendPanel() {
+    const overlay = document.getElementById('trendOverlay');
+    if (overlay.style.display === 'flex') { overlay.style.display = 'none'; } else { renderTrendGrid(); overlay.style.display = 'flex'; }
+}
+function filterTrendTime(t, btn) {
+    trendTimeFilter = t === '全部' ? '全部' : parseInt(t);
+    document.querySelectorAll('#trendTimeFilters .btn-filter').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderTrendGrid();
+}
+function renderTrendGrid() {
+    const DL = ['D1','D2','D3','D4','D5','D6','D7'];
+    const cont = document.getElementById('trendGrid');
+    const scrollTop = cont.scrollTop;
+    cont.innerHTML = products.map(p => {
+        if (trendTimeFilter !== '全部' && p.time !== trendTimeFilter) return '';
+        const td = trendData[p.name]; ensureObs(p.name);
+        const result = td.pattern!==null ? {confirmed:td.pattern,candidates:[td.pattern]} : predictPattern(td.obs);
+        const pl = result.confirmed!==null ? TREND_NAMES[result.confirmed] : (result.candidates.length<12 ? `候選${result.candidates.length}` : '未知');
+        const bc = result.confirmed!==null ? (result.confirmed%2===0?'trend-strong':'trend-weak') : 'trend-unknown';
+        let hd=DL.map(l=>`<div style="min-width:34px;text-align:center;font-size:10px;color:#666;">${l}</div>`).join('');
+        let bx='',ar='',pr='';
+        for(let d=0;d<7;d++){
+            const bv=td.obs[d].boxes,av=td.obs[d].arrow;
+            bx+=`<div class="drop-cell ${bv!==-1?'filled '+BOX_CLASSES[bv]:''}" ondragover="cellDragOver(event)" ondragleave="cellDragLeave(event)" ondrop="cellDrop(event,'${p.name}',${d},'box')" oncontextmenu="cellRightClick(event,'${p.name}',${d},'box')" title="拖入箱數 / 右鍵清除">${bv!==-1?BOX_LABELS[bv]:''}</div>`;
+            ar+=`<div class="drop-cell ${av!==-1?'filled tag-arr-'+av:''}" ondragover="cellDragOver(event)" ondragleave="cellDragLeave(event)" ondrop="cellDrop(event,'${p.name}',${d},'arr')" oncontextmenu="cellRightClick(event,'${p.name}',${d},'arr')" title="拖入箭頭 / 右鍵清除">${av!==-1?ARROW_SYMBOLS[av]:''}</div>`;
+            if(result.confirmed!==null){const pb=demandToBoxes(DEMAND_TABLE[result.confirmed][d]);pr+=`<div class="drop-cell predicted ${BOX_CLASSES[pb]}" style="font-size:10px;height:20px;">${pb}箱</div>`;}
+            else{pr+=`<div class="drop-cell predicted" style="height:20px;color:#444;">?</div>`;}
+        }
+        const sel=`<select class="trend-select" onchange="setTrendManual('${p.name}',this.value)" title="手動指定"><option value="-1" ${td.pattern===null?'selected':''}>自動</option>${TREND_NAMES.map((n,i)=>`<option value="${i}" ${td.pattern===i?'selected':''}>${n}</option>`).join('')}</select>`;
+        const pop=`<select class="trend-select" onchange="setTrendPop('${p.name}',this.value)" style="width:56px;"><option value="1.4" ${td.pop==1.4?'selected':''}>火爆</option><option value="1.2" ${td.pop==1.2?'selected':''}>矚目</option><option value="1.0" ${td.pop==1.0?'selected':''}>普通</option><option value="0.8" ${td.pop==0.8?'selected':''}>無人</option></select>`;
+        return `<div class="trend-item" style="flex-direction:column;gap:3px;padding:8px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;width:100%;margin-bottom:2px;">
+                <span class="trend-item-name" style="font-size:13px;">${p.name} <span style="font-size:11px;color:#888;">(${p.time}h)</span></span>
+                <div style="display:flex;gap:3px;align-items:center;"><span class="trend-badge ${bc}" style="font-size:11px;">${pl}</span>${pop} ${sel}</div>
+            </div>
+            <div style="display:grid;grid-template-columns:32px repeat(7,1fr);gap:2px;width:100%;">
+                <div></div>${hd}
+                <div style="font-size:9px;color:#888;display:flex;align-items:center;">箱</div>${bx}
+                <div style="font-size:9px;color:#888;display:flex;align-items:center;">勢</div>${ar}
+                <div style="font-size:9px;color:#555;display:flex;align-items:center;">測</div>${pr}
+            </div>
+        </div>`;
+    }).join('');
+    cont.scrollTop = scrollTop;
+}
+function setTrendPop(name, val) { trendData[name].pop = parseFloat(val); saveData(); }
+
+function setTrendManual(name, val) {
+    const v = parseInt(val);
+    trendData[name].pattern = v === -1 ? null : v;
+    renderTrendGrid();
+    saveData();
+}
+
+function autoApplyTrends() {
+    let applied = 0;
+    products.forEach(p => {
+        const td = trendData[p.name];
+        const result = td.pattern !== null ? { confirmed: td.pattern } : predictPattern(td.obs);
+        if (result.confirmed !== null) {
+            for (let d = 0; d < 7; d++) {
+                const supMul = getTrendSupplyMul(result.confirmed, d);
+                // 只更新非休息日對應的供給值（供給根據趨勢自動設定）
+            }
+            // 設定當前選中日的供給
+            const dayIdx = currentPeriod - 1;
+            const supMul = getTrendSupplyMul(result.confirmed, dayIdx);
+            statusMap[p.name].supply = supMul;
+            statusMap[p.name].pop = td.pop;
+            applied++;
+        }
+    });
+    refreshAll();
+    if (document.getElementById('batchOverlay').style.display === 'flex') renderBatchPanel();
+    alert(`已將 ${applied} 個商品的趨勢預測套用至「${dayNames[currentPeriod-1]}」的供需設定！\n(人氣也已同步套用)`);
+}
+
+function clearAllTrends() {
+    if (!confirm("確定清空所有趨勢資料？")) return;
+    products.forEach(p => trendData[p.name] = { pattern: null, obs: [], pop: 1.0 });
+    renderTrendGrid();
+    saveData();
+}
+
+// === V20: gameId → 繁體商品名 映射表 ===
+// gameId(1-based) 對應 products 陣列索引(0-based)：gameId 1 = products[0], ...
+// 簡體→繁體、去除「海島/開拓工房」前綴的映射
+const GAME_ID_TO_PRODUCT = {
+    1:"治療劑", 2:"火藥", 3:"座椅", 4:"烤扇貝", 5:"木製項鍊",
+    6:"珊瑚戒指", 7:"開面盔", 8:"石刃棒", 9:"酸泡菜", 10:"烤南瓜",
+    11:"束腰衣", 12:"廚刀", 13:"木刷", 14:"水煮蛋", 15:"骨拳",
+    16:"獸牙耳墜", 17:"黃油", 18:"磚塊櫃台", 19:"綿羊銅像", 20:"植物成長劑",
+    21:"石榴石刺劍", 22:"雲杉圓盾", 23:"鯊油", 24:"白銀耳夾", 25:"甜新薯",
+    26:"高山蘿蔔沙拉", 27:"焦糖", 28:"緞帶", 29:"繩索", 30:"騎士帽",
+    31:"角笛", 32:"鹽漬鱈魚", 33:"墨魚汁", 34:"仙藥", 35:"莓果醬",
+    36:"番茄醬", 37:"洋蔥湯", 38:"魚派", 39:"玉米片", 40:"醃小蘿蔔",
+    41:"鐵斧", 42:"石英戒指", 43:"瓷罐", 44:"果蔬汁", 45:"南瓜布丁",
+    46:"綿羊地毯", 47:"園藝鐮", 48:"床", 49:"鱗指套", 50:"手杖",
+    51:"珊瑚劍", 52:"椰汁", 53:"蜂蜜", 54:"藍蛋白石", 55:"乾花",
+    56:"辣椒粉", 57:"韭蔥洋蔥湯", 58:"無人麵包", 59:"新薯沙拉", 60:"調味汁",
+    61:"暖爐", 62:"提燈", 63:"泡鹼", 64:"五海雜燴湯", 65:"化石標本",
+    66:"浴缸", 67:"眼鏡", 68:"隔熱玻璃", 69:"煎紅花菜豆", 70:"紅菜湯",
+    71:"僧厥鑲茄子", 72:"醃西葫蘆", 73:"黃銅餐盤", 74:"砂輪機", 75:"翠銀環刃",
+    76:"金髮飾", 77:"水晶像", 78:"水果撈", 79:"甜新薯塔", 80:"拌細面",
+    81:"水牛豆沙拉"
+};
+
+// 歡迎度模式 → 各商品人氣倍率
+// popPattern 的值是 0-indexed byte，對應不同歡迎度組合
+// 這裡只取人氣倍率，不影響趨勢匯入核心邏輯
+
+// Base64url 解碼（URL安全的 base64：用 - 代替 +，用 _ 代替 /，無 padding）
+function base64urlDecode(str) {
+    let b64 = str.replace(/-/g, '+').replace(/_/g, '/');
+    while (b64.length % 4) b64 += '=';
+    const binStr = atob(b64);
+    const bytes = new Uint8Array(binStr.length);
+    for (let i = 0; i < binStr.length; i++) bytes[i] = binStr.charCodeAt(i);
+    return bytes;
+}
+
+// 偵測匯入格式
+function detectImportFormat() {
+    const raw = document.getElementById('trendImportCode').value.trim();
+    const hint = document.getElementById('importFormatHint');
+    if (!raw) { hint.textContent = ''; return; }
+    if (raw.includes('island.ffxiv.cyou') && raw.includes('/pat/')) {
+        hint.innerHTML = '🔍 偵測到：<span style="color:#0bf;"> /pat/ URL 格式</span>';
+    } else if (raw.startsWith('{')) {
+        if (raw.includes('supplyDemand')) {
+            hint.innerHTML = '🔍 偵測到：<span style="color:#0bf;"> JSON 格式</span>';
+        } else {
+            hint.innerHTML = '🔍 偵測到：<span style="color:#0bf;">JSON 格式</span>';
+        }
+    } else {
+        hint.innerHTML = '🔍 <span style="color:#f88;">無法辨識格式</span>';
+    }
+}
+
+// 解析 /pat/ URL 格式
+function parsePatUrl(raw) {
+    // 提取 /pat/ 後面的 base64url 字串
+    const patMatch = raw.match(/\/pat\/([A-Za-z0-9_-]+)/);
+    if (!patMatch) return null;
+    const encoded = patMatch[1];
+    let bytes;
+    try { bytes = base64urlDecode(encoded); } catch(e) { console.error("base64url 解碼失敗", e); return null; }
+    if (bytes.length < 2) return null;
+
+    // 第 1 byte = 歡迎度模式 (popPattern)
+    const popPattern = bytes[0];
+    
+    // 後續 bytes，每 4 bits = 一個商品的趨勢 pattern（1-indexed: 1=2強...12=7弱）
+    // 每個 byte 中：LOW nibble = 偶數 gameId, HIGH nibble = 奇數 gameId
+    // nibble 0 = gameId 0（空項目，跳過），nibble 1 = gameId 1（治療劑）...
+    const result = {};
+    const dataBytes = bytes.slice(1);
+    const totalNibbles = dataBytes.length * 2;
+    
+    for (let i = 0; i < totalNibbles; i++) {
+        const gameId = i; // nibble index = gameId（含 id0）
+        if (gameId === 0 || gameId > 81) continue;
+        const byteIdx = Math.floor(i / 2);
+        // 編碼：偶數 nibble = LOW nibble，奇數 nibble = HIGH nibble
+        const nibble = (i % 2 === 0) ? dataBytes[byteIdx] & 0x0F : (dataBytes[byteIdx] >> 4) & 0x0F;
+        
+        if (nibble === 0) continue; // 0 = 未知/未設定
+        if (nibble > 12) continue; // 超出範圍
+        
+        // nibble 1-indexed → TREND_NAMES 0-indexed: nibble-1
+        const trendIdx = nibble - 1;
+        const productName = GAME_ID_TO_PRODUCT[gameId];
+        if (productName && trendData[productName]) {
+            result[productName] = trendIdx;
+        }
+    }
+    
+    return { patterns: result, popPattern };
+}
+
+function importTrendData() {
+    try {
+        const raw = document.getElementById('trendImportCode').value.trim();
+        if (!raw) return alert("請先貼上資料！");
+        
+        // 自動辨識格式
+        if (raw.includes('/pat/') || raw.includes('island.ffxiv.cyou')) {
+            // /pat/ URL 格式
+            const parsed = parsePatUrl(raw);
+            if (!parsed) return alert("無法解析 /pat/ URL，請確認連結是否完整！");
+            
+            let count = 0;
+            let preview = [];
+            Object.entries(parsed.patterns).forEach(([name, trendIdx]) => {
+                if (trendData[name]) {
+                    trendData[name].pattern = trendIdx;
+                    count++;
+                    if (preview.length < 5) preview.push(`${name}=${TREND_NAMES[trendIdx]}`);
+                }
+            });
+            renderTrendGrid();
+            saveData();
+            alert(`✅ URL 匯入成功！\n已套用 ${count} 個商品的趨勢資料。\n(歡迎度模式: ${parsed.popPattern})\n\n前幾項：${preview.join('、')}\n\n💡 人氣倍率請在各商品中手動確認調整。`);
+            return;
+        }
+        
+        // JSON 格式
+        const data = JSON.parse(raw);
+        let count = 0;
+        
+        // JSON 格式：{supplyDemand: [{id, supply, demand}, ...], popularity, ...}
+        if (data.supplyDemand && Array.isArray(data.supplyDemand)) {
+            data.supplyDemand.forEach(item => {
+                if (!item || item.id === 0 || item.id > 81) return;
+                const productName = GAME_ID_TO_PRODUCT[item.id];
+                if (!productName || !trendData[productName]) return;
+                if (item.demand && item.demand >= 1 && item.demand <= 12) {
+                    trendData[productName].pattern = item.demand - 1; // 1-indexed → 0-indexed
+                    count++;
+                }
+            });
+            renderTrendGrid();
+            saveData();
+            alert(`✅ JSON 匯入成功！\n已套用 ${count} 個商品的趨勢資料。`);
+            return;
+        }
+        
+        // 自訂 JSON 格式：{"商品名": "5強", ...} 或 {"商品名": {"pattern": 9, "pop": 1.4}, ...}
+        Object.keys(data).forEach(name => {
+            if (!trendData[name]) return;
+            const val = data[name];
+            if (typeof val === 'string') {
+                const idx = TREND_NAMES.indexOf(val);
+                if (idx !== -1) { trendData[name].pattern = idx; count++; }
+            } else if (typeof val === 'object') {
+                if (val.pattern !== undefined) { trendData[name].pattern = val.pattern; count++; }
+                if (val.pop !== undefined) { trendData[name].pop = val.pop; }
+            }
+        });
+        renderTrendGrid();
+        saveData();
+        alert(`成功匯入 ${count} 個商品的趨勢資料！`);
+    } catch(e) { alert("解析失敗，請確認格式是否正確！\n支援 JSON 或 URL"); console.error(e); }
+}
+
+function exportTrendData() {
+    const out = {};
+    products.forEach(p => {
+        const td = trendData[p.name];
+        if (td.pattern !== null) {
+            out[p.name] = { pattern: td.pattern, trend: TREND_NAMES[td.pattern], pop: td.pop };
+        }
+    });
+    const code = JSON.stringify(out, null, 2);
+    document.getElementById('trendImportCode').value = code;
+    navigator.clipboard.writeText(code).then(() => alert("趨勢資料已複製到剪貼簿！")).catch(() => alert("已生成，請手動複製。"));
+}
+
+// === 原有功能 (含V17優化 + V18修復) ===
 function toggleBatchPanel() {
     const overlay = document.getElementById('batchOverlay');
     if (overlay.style.display === 'flex') { overlay.style.display = 'none'; } else { renderBatchPanel(); overlay.style.display = 'flex'; }
 }
-
 function filterBatchTime(t, btn) {
     batchCurrentTime = t === '全部' ? '全部' : parseInt(t);
     document.querySelectorAll('#batchTimeFilters .btn-filter').forEach(b => b.classList.remove('active'));
     btn.classList.add('active'); renderBatchPanel();
 }
-
 function setBatchS(name, key, val) { statusMap[name][key] = parseFloat(val); renderBatchPanel(); refreshAll(); }
 
-// V17 優化: 批次渲染
 function renderBatchPanel() {
     const cont = document.getElementById('batchList');
     const scrollTop = cont.scrollTop;
-    
-    const html = [...products].sort((a,b)=>a.level - b.level).map(p => {
+    cont.innerHTML = [...products].sort((a,b)=>a.level - b.level).map(p => {
         if(batchCurrentTime !== '全部' && p.time !== batchCurrentTime) return '';
         const s = statusMap[p.name];
+        const td = trendData[p.name];
+        const trendLabel = td.pattern !== null ? TREND_NAMES[td.pattern] : '';
+        const trendBadge = trendLabel ? `<span class="trend-badge ${td.pattern % 2 === 0 ? 'trend-strong' : 'trend-weak'}">${trendLabel}</span>` : '';
         return `
         <div class="batch-item">
-            <div class="batch-item-name">${p.name} <span class="batch-item-rank">(Rank ${p.level} | ${p.time}h)</span></div>
+            <div class="batch-item-name">${p.name} ${trendBadge} <span class="batch-item-rank">(${p.level}|${p.time}h)</span></div>
             <div class="batch-controls">
                 <div class="bc-row">
                     <button class="btn-radio ${s.pop==1.4?'pop-14':''}" onclick="setBatchS('${p.name}', 'pop', 1.4)">火爆</button>
@@ -462,59 +934,27 @@ function renderBatchPanel() {
             </div>
         </div>`;
     }).join('');
-    
-    cont.innerHTML = html; cont.scrollTop = scrollTop; 
+    cont.scrollTop = scrollTop;
 }
 
 function filterByCat(c, btn) { currentCat = c; document.querySelectorAll('#catFilters .btn-filter').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); updateProductList(); }
-
 function toggleTimeFilter(t, btn) {
-    if (t === '全部') {
-        currentTimeLimits = ['全部'];
-        document.querySelectorAll('#timeFilters .btn-filter').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-    } else {
-        const idx = currentTimeLimits.indexOf('全部');
-        if (idx > -1) currentTimeLimits.splice(idx, 1);
+    if (t === '全部') { currentTimeLimits = ['全部']; document.querySelectorAll('#timeFilters .btn-filter').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
+    else {
+        let idx = currentTimeLimits.indexOf('全部'); if (idx > -1) currentTimeLimits.splice(idx, 1);
         const tIdx = currentTimeLimits.indexOf(t);
-        if (tIdx > -1) {
-            currentTimeLimits.splice(tIdx, 1);
-            btn.classList.remove('active');
-        } else {
-            currentTimeLimits.push(t);
-            btn.classList.add('active');
-        }
-        if (currentTimeLimits.length === 0) {
-            currentTimeLimits = ['全部'];
-            document.querySelector('#timeFilters .btn-filter[data-time="全部"]').classList.add('active');
-        } else {
-            document.querySelector('#timeFilters .btn-filter[data-time="全部"]').classList.remove('active');
-        }
+        if (tIdx > -1) { currentTimeLimits.splice(tIdx, 1); btn.classList.remove('active'); } else { currentTimeLimits.push(t); btn.classList.add('active'); }
+        if (currentTimeLimits.length === 0) { currentTimeLimits = ['全部']; document.querySelector('#timeFilters .btn-filter[data-time="全部"]').classList.add('active'); }
+        else { document.querySelector('#timeFilters .btn-filter[data-time="全部"]').classList.remove('active'); }
     }
     updateProductList();
 }
-
-function toggleComboFilter(btn) { 
-    if (weeklySchedules[currentPeriod].length === 0) return alert("請先在當前選中的星期加入至少一件商品，才能啟用連鎖推薦！");
-    isComboFilterOn = !isComboFilterOn; btn.classList.toggle('active'); updateProductList(); 
-}
-
-function toggleFavFilter(btn) {
-    isFavFilterOn = !isFavFilterOn; btn.classList.toggle('active'); updateProductList();
-}
-
-function toggleFav(name, event) {
-    event.stopPropagation();
-    if (favorites.includes(name)) { favorites = favorites.filter(n => n !== name); } 
-    else { favorites.push(name); }
-    updateProductList(); saveData();
-}
-
+function toggleComboFilter(btn) { if (weeklySchedules[currentPeriod].length === 0) return alert("請先加入至少一件商品！"); isComboFilterOn = !isComboFilterOn; btn.classList.toggle('active'); updateProductList(); }
+function toggleFavFilter(btn) { isFavFilterOn = !isFavFilterOn; btn.classList.toggle('active'); updateProductList(); }
+function toggleFav(name, event) { event.stopPropagation(); if (favorites.includes(name)) { favorites = favorites.filter(n => n !== name); } else { favorites.push(name); } updateProductList(); saveData(); }
 function changeSort(val) { currentSort = val; updateProductList(); }
-
 function updateS(n,k,v) { statusMap[n][k] = parseFloat(v); refreshAll(); }
 function toggleDrawer(id) { const d = document.getElementById(id); d.style.display = d.style.display === 'block' ? 'none' : 'block'; }
-
 function toggleAllLivestock(checked) { document.querySelectorAll('#livestockFilter input[type="checkbox"]').forEach(cb => cb.checked = checked); }
 function toggleAllCrops(checked) { document.querySelectorAll('#cropFilter input[type="checkbox"]').forEach(cb => cb.checked = checked); }
 
@@ -524,18 +964,12 @@ function selectDay(d) {
     if(isComboFilterOn && weeklySchedules[d].length === 0) { isComboFilterOn = false; document.getElementById('btnCombo').classList.remove('active'); }
     refreshAll();
 }
-
-// V17 優化: 阻止事件冒泡
 function toggleRestDay(d, event) {
     event.stopPropagation();
-    if(restDays.includes(d)) { restDays = restDays.filter(x => x !== d); } 
-    else {
-        if(restDays.length >= 2) return alert("一週最多只能設定 2 天休息日！");
-        restDays.push(d); weeklySchedules[d] = []; 
-    }
+    if(restDays.includes(d)) { restDays = restDays.filter(x => x !== d); }
+    else { if(restDays.length >= 2) return alert("一週最多只能設定 2 天休息日！"); restDays.push(d); weeklySchedules[d] = []; }
     refreshAll();
 }
-
 function clearDay(d, event) {
     event.stopPropagation();
     if (weeklySchedules[d].length > 0 && confirm(`確定清空 ${dayNames[d-1]} 的班表嗎？`)) {
@@ -544,256 +978,292 @@ function clearDay(d, event) {
         refreshAll();
     }
 }
-
 function addBlankTime(hours) {
-    if(restDays.includes(currentPeriod)) return alert("休假中不能排班！請先取消休假。");
-    const t = weeklySchedules[currentPeriod].reduce((s,i)=>s+i.time, 0);
-    if(t + hours > 24) return alert("時間不足 (最多24h)");
+    if(restDays.includes(currentPeriod)) return alert("休假中不能排班！");
+    if(weeklySchedules[currentPeriod].reduce((s,i)=>s+i.time, 0) + hours > 24) return alert("時間不足 (最多24h)");
     weeklySchedules[currentPeriod].push({ name: "時間留白", time: hours, base: 0, cats: [], materials: {}, isDummy: true });
     refreshAll();
 }
 
-// --- 拖曳系統 ---
 let dragSrc = null;
+let selectedSlots = {}; // { "day-idx": true } 多選狀態
 
-function handleDragStart(e, d, i) {
-    dragSrc = { d, i };
-    e.dataTransfer.effectAllowed = 'move';
-    setTimeout(() => e.target.classList.add('dragging'), 0);
+function toggleSlotSelect(d, i, event) {
+    event.stopPropagation();
+    const key = `${d}-${i}`;
+    if (selectedSlots[key]) { delete selectedSlots[key]; }
+    else { selectedSlots[key] = true; }
+    refreshAll();
 }
 
-function handleDragEnd(e) {
-    e.target.classList.remove('dragging');
-    document.querySelectorAll('.day-col').forEach(col => col.classList.remove('drag-over'));
-    dragSrc = null;
+function clearSelection() { selectedSlots = {}; }
+
+function getSelectedCount() { return Object.keys(selectedSlots).length; }
+
+function getSelectedItems() {
+    // 返回 [{d, i, item}, ...] 按日+索引排序
+    return Object.keys(selectedSlots).map(k => {
+        const [d, i] = k.split('-').map(Number);
+        return { d, i, item: weeklySchedules[d][i] };
+    }).filter(x => x.item).sort((a, b) => a.d - b.d || a.i - b.i);
 }
 
-function handleDragOver(e) { e.preventDefault(); return false; }
-
-function handleDragEnter(e) {
-    e.preventDefault();
-    const col = e.currentTarget;
-    if(!col.classList.contains('rest')) col.classList.add('drag-over');
-}
-
-function handleDragLeave(e) {
-    const col = e.currentTarget;
-    if(e.relatedTarget && !col.contains(e.relatedTarget)) { col.classList.remove('drag-over'); }
-}
-
-function handleDrop(e, targetDay) {
-    e.stopPropagation();
-    const col = e.currentTarget;
-    col.classList.remove('drag-over');
-
-    if (!dragSrc) return;
-    const { d: srcDay, i: srcIdx } = dragSrc;
-    if (srcDay === targetDay) return;
-
-    if (restDays.includes(targetDay)) return alert("目標日是休息日，無法排班！");
-
-    const item = weeklySchedules[srcDay][srcIdx];
-    const currentTotal = weeklySchedules[targetDay].reduce((s, x) => s + x.time, 0);
-    if (currentTotal + item.time > 24) return alert(`時間不足！該日無法再塞入 ${item.time} 小時的商品。`);
-
-    weeklySchedules[srcDay].splice(srcIdx, 1);
-    weeklySchedules[targetDay].push(item);
+function moveSelectedTo(targetDay, event) {
+    if (event) event.stopPropagation();
+    if (restDays.includes(targetDay)) return alert("目標日是休息日！");
+    const items = getSelectedItems();
+    if (items.length === 0) return alert("請先按 Ctrl+點擊 選取要移動的班表卡片！");
     
-    if(srcDay === currentPeriod && weeklySchedules[srcDay].length === 0 && isComboFilterOn) {
-        isComboFilterOn = false; document.getElementById('btnCombo').classList.remove('active');
+    const totalTime = items.reduce((s, x) => s + x.item.time, 0);
+    const currentUsed = weeklySchedules[targetDay].reduce((s, x) => s + x.time, 0);
+    // 扣除從目標日選中的項目（如果有的話它們會被移走）
+    const fromTargetTime = items.filter(x => x.d === targetDay).reduce((s, x) => s + x.item.time, 0);
+    if (currentUsed - fromTargetTime + totalTime > 24) return alert(`目標日時間不足！需要 ${totalTime}h，但只剩 ${24 - currentUsed + fromTargetTime}h。`);
+    
+    // 先收集所有要移動的item（要從後往前刪避免索引錯位）
+    const byDay = {};
+    items.forEach(x => { if (!byDay[x.d]) byDay[x.d] = []; byDay[x.d].push(x.i); });
+    const movedItems = items.map(x => ({...x.item}));
+    
+    // 從大索引往小索引刪
+    Object.keys(byDay).forEach(d => {
+        byDay[d].sort((a, b) => b - a).forEach(idx => {
+            weeklySchedules[parseInt(d)].splice(idx, 1);
+        });
+    });
+    
+    // 加到目標日
+    movedItems.forEach(item => weeklySchedules[targetDay].push(item));
+    
+    clearSelection();
+    if (isComboFilterOn) { 
+        const anyEmpty = Object.keys(byDay).some(d => parseInt(d) === currentPeriod && weeklySchedules[currentPeriod].length === 0);
+        if (anyEmpty) { isComboFilterOn = false; document.getElementById('btnCombo').classList.remove('active'); }
     }
     refreshAll();
 }
 
-function moveItem(d, i, dir, e) {
-    e.stopPropagation();
-    if (i + dir < 0 || i + dir >= weeklySchedules[d].length) return;
-    const temp = weeklySchedules[d][i];
-    weeklySchedules[d][i] = weeklySchedules[d][i + dir];
-    weeklySchedules[d][i + dir] = temp;
+function deleteSelected(event) {
+    if (event) event.stopPropagation();
+    const items = getSelectedItems();
+    if (items.length === 0) return;
+    if (!confirm(`確定刪除選中的 ${items.length} 個班表項目？`)) return;
+    
+    const byDay = {};
+    items.forEach(x => { if (!byDay[x.d]) byDay[x.d] = []; byDay[x.d].push(x.i); });
+    Object.keys(byDay).forEach(d => {
+        byDay[d].sort((a, b) => b - a).forEach(idx => {
+            weeklySchedules[parseInt(d)].splice(idx, 1);
+        });
+    });
+    clearSelection();
     refreshAll();
 }
 
-// V17 優化: 拔除內層重複賦值，直接組裝 HTML 字串
+function moveWholeDay(srcDay, targetDay, event) {
+    if (event) event.stopPropagation();
+    if (restDays.includes(targetDay)) return alert("目標日是休息日！");
+    if (weeklySchedules[srcDay].length === 0) return alert("來源日沒有班表！");
+    const srcTime = weeklySchedules[srcDay].reduce((s, x) => s + x.time, 0);
+    const targetTime = weeklySchedules[targetDay].reduce((s, x) => s + x.time, 0);
+    if (targetTime + srcTime > 24 && weeklySchedules[targetDay].length > 0) {
+        if (!confirm(`目標日已有班表(${targetTime}h)，是否交換兩天的班表？`)) return;
+        // 交換
+        const temp = [...weeklySchedules[srcDay]];
+        weeklySchedules[srcDay] = [...weeklySchedules[targetDay]];
+        weeklySchedules[targetDay] = temp;
+    } else {
+        weeklySchedules[srcDay].forEach(item => weeklySchedules[targetDay].push({...item}));
+        weeklySchedules[srcDay] = [];
+    }
+    refreshAll();
+}
+
+function handleDragStart(e, d, i) {
+    // 如果拖曳的是選中項之一，拖動整個選集
+    const key = `${d}-${i}`;
+    if (selectedSlots[key] && getSelectedCount() > 1) {
+        dragSrc = { multi: true, items: getSelectedItems() };
+    } else {
+        dragSrc = { d, i, multi: false };
+    }
+    e.dataTransfer.effectAllowed = 'move';
+    setTimeout(() => e.target.classList.add('dragging'), 0);
+}
+function handleDragEnd(e) { e.target.classList.remove('dragging'); document.querySelectorAll('.day-col').forEach(col => col.classList.remove('drag-over')); dragSrc = null; }
+function handleDragOver(e) { e.preventDefault(); return false; }
+function handleDragEnter(e) { e.preventDefault(); if(!e.currentTarget.classList.contains('rest')) e.currentTarget.classList.add('drag-over'); }
+function handleDragLeave(e) { if(e.relatedTarget && !e.currentTarget.contains(e.relatedTarget)) e.currentTarget.classList.remove('drag-over'); }
+function handleDrop(e, targetDay) {
+    e.stopPropagation(); e.currentTarget.classList.remove('drag-over');
+    if (!dragSrc) return;
+    
+    if (dragSrc.multi) {
+        // 多選拖曳
+        if (restDays.includes(targetDay)) return alert("目標日是休息日！");
+        const items = dragSrc.items;
+        const totalTime = items.reduce((s, x) => s + x.item.time, 0);
+        const fromTargetTime = items.filter(x => x.d === targetDay).reduce((s, x) => s + x.item.time, 0);
+        const currentUsed = weeklySchedules[targetDay].reduce((s, x) => s + x.time, 0);
+        if (currentUsed - fromTargetTime + totalTime > 24) return alert(`時間不足！`);
+        
+        const byDay = {};
+        items.forEach(x => { if (!byDay[x.d]) byDay[x.d] = []; byDay[x.d].push(x.i); });
+        const movedItems = items.map(x => ({...x.item}));
+        Object.keys(byDay).forEach(d => {
+            byDay[d].sort((a, b) => b - a).forEach(idx => weeklySchedules[parseInt(d)].splice(idx, 1));
+        });
+        movedItems.forEach(item => weeklySchedules[targetDay].push(item));
+        clearSelection();
+        refreshAll();
+        return;
+    }
+    
+    // 單卡拖曳（原邏輯）
+    const { d: srcDay, i: srcIdx } = dragSrc;
+    if (srcDay === targetDay) return;
+    if (restDays.includes(targetDay)) return alert("目標日是休息日！");
+    const item = weeklySchedules[srcDay][srcIdx];
+    if (weeklySchedules[targetDay].reduce((s, x) => s + x.time, 0) + item.time > 24) return alert(`時間不足！`);
+    weeklySchedules[srcDay].splice(srcIdx, 1);
+    weeklySchedules[targetDay].push(item);
+    if(srcDay === currentPeriod && weeklySchedules[srcDay].length === 0 && isComboFilterOn) { isComboFilterOn = false; document.getElementById('btnCombo').classList.remove('active'); }
+    clearSelection();
+    refreshAll();
+}
+function moveItem(d, i, dir, e) {
+    e.stopPropagation();
+    if (i + dir < 0 || i + dir >= weeklySchedules[d].length) return;
+    [weeklySchedules[d][i], weeklySchedules[d][i + dir]] = [weeklySchedules[d][i + dir], weeklySchedules[d][i]];
+    refreshAll();
+}
+
 function refreshAll() {
     let currentGroove = parseInt(document.getElementById('startGroove').value) || 0;
     const grooveLimit = parseInt(document.getElementById('landmarks').value);
     const wsMul = parseFloat(document.getElementById('wsLevel').value);
     const numWorkshops = parseInt(document.getElementById('numWorkshops').value) || 3;
-    
     let totalWeeklyRevenue = 0;
     let allMaterialsNeeded = {};
     let daysHtml = "";
-    
+
     for(let d=1; d<=7; d++) {
         const schedule = weeklySchedules[d];
         const isRest = restDays.includes(d);
         const isActive = currentPeriod === d;
-        let dayRevenue = 0; 
-        let lastP = null;
-        let slotsHtml = "";
-        let currentHour = 16;
+        let dayRevenue = 0; let lastP = null; let slotsHtml = ""; let currentHour = 16;
 
         if(!isRest) {
             schedule.forEach((p, idx) => {
-                let isCombo = false;
-                let val = 0;
-                
+                let isCombo = false; let val = 0;
                 if (!p.isDummy) {
                     isCombo = (lastP && !lastP.isDummy && p.name !== lastP.name && p.cats.some(c => lastP.cats.includes(c)));
-                    if(isCombo) {
-                        currentGroove += numWorkshops;
-                        if(currentGroove > grooveLimit) currentGroove = grooveLimit;
-                    }
+                    if(isCombo) { currentGroove += numWorkshops; if(currentGroove > grooveLimit) currentGroove = grooveLimit; }
                     const s = statusMap[p.name] || {pop:1, supply:1};
-                    const unit = Math.floor(s.pop * s.supply * Math.floor(p.base * wsMul * (1 + currentGroove/100)));
-                    val = unit * (isCombo ? 2 : 1);
+                    val = Math.floor(s.pop * s.supply * Math.floor(p.base * wsMul * (1 + currentGroove/100))) * (isCombo ? 2 : 1);
                     dayRevenue += val;
                     Object.entries(p.materials).forEach(([m, qty]) => { allMaterialsNeeded[m] = (allMaterialsNeeded[m] || 0) + (qty * numWorkshops); });
                     lastP = p;
-                } else {
-                    lastP = null;
-                }
-                
-                const st = formatTime(currentHour);
-                currentHour += p.time;
-                const et = formatTime(currentHour);
-                
+                } else { lastP = null; }
+                const st = formatTime(currentHour); currentHour += p.time; const et = formatTime(currentHour);
                 if (p.isDummy) {
-                    slotsHtml += `
-                        <div class="schedule-slot dummy" draggable="true" ondragstart="handleDragStart(event, ${d}, ${idx})" ondragend="handleDragEnd(event)">
-                            <div class="slot-row-1">
-                                <span class="slot-time">${st} - ${et}</span>
-                                <div class="slot-actions">
-                                    <button class="btn-move" onclick="moveItem(${d}, ${idx}, -1, event)" title="上移">▲</button>
-                                    <button class="btn-move" onclick="moveItem(${d}, ${idx}, 1, event)" title="下移">▼</button>
-                                    <button class="btn-del" onclick="removeFromSchedule(${d}, ${idx}, event)">×</button>
-                                </div>
-                            </div>
-                            <div class="slot-row-2">
-                                <span class="slot-name">⏳ ${p.name}</span>
-                                <span class="slot-price">無產出</span>
-                            </div>
-                            <div class="slot-row-3">
-                                <span class="slot-cat">(${p.time}h)</span>
-                                <span class="slot-combo"></span>
-                            </div>
-                        </div>`;
+                    const isSel = selectedSlots[`${d}-${idx}`];
+                    slotsHtml += `<div class="schedule-slot dummy${isSel?' selected':''}" draggable="true" ondragstart="handleDragStart(event,${d},${idx})" ondragend="handleDragEnd(event)" onclick="if(event.ctrlKey||event.metaKey){toggleSlotSelect(${d},${idx},event)}"><div class="slot-row-1"><span class="slot-time">${st} - ${et}</span><div class="slot-actions"><button class="btn-move" onclick="moveItem(${d},${idx},-1,event)">▲</button><button class="btn-move" onclick="moveItem(${d},${idx},1,event)">▼</button><button class="btn-del" onclick="removeFromSchedule(${d},${idx},event)">×</button></div></div><div class="slot-row-2"><span class="slot-name">⏳ ${p.name}</span><span class="slot-price">無產出</span></div><div class="slot-row-3"><span class="slot-cat">(${p.time}h)</span><span></span></div></div>`;
                 } else {
-                    const matTooltip = "所需材料：\n" + Object.entries(p.materials).map(([m, qty]) => `${m} x${qty}`).join("\n");
-                    slotsHtml += `
-                        <div class="schedule-slot" draggable="true" ondragstart="handleDragStart(event, ${d}, ${idx})" ondragend="handleDragEnd(event)">
-                            <div class="slot-row-1">
-                                <span class="slot-time">${st} - ${et}</span>
-                                <div class="slot-actions">
-                                    <button class="btn-move" onclick="moveItem(${d}, ${idx}, -1, event)" title="上移">▲</button>
-                                    <button class="btn-move" onclick="moveItem(${d}, ${idx}, 1, event)" title="下移">▼</button>
-                                    <button class="btn-del" onclick="removeFromSchedule(${d}, ${idx}, event)" title="刪除此商品">×</button>
-                                </div>
-                            </div>
-                            <div class="slot-row-2">
-                                <span class="slot-name" title="${matTooltip}">${p.name}</span>
-                                <span class="slot-price" title="單間收益">$${val}</span>
-                            </div>
-                            <div class="slot-row-3">
-                                <span class="slot-cat">${p.cats.join('/')}</span>
-                                ${isCombo ? `<span class="slot-combo">(Combo x2)</span>` : `<span></span>`}
-                            </div>
-                        </div>`;
+                    const matTip = Object.entries(p.materials).map(([m,q])=>`${m} x${q}`).join("\n");
+                    // V18: 趨勢標記
+                    const td = trendData[p.name];
+                    const trendInfo = td && td.pattern !== null ? `<span class="trend-badge ${td.pattern%2===0?'trend-strong':'trend-weak'}" style="font-size:10px;">${TREND_NAMES[td.pattern]}</span>` : '';
+                    const peakDay = td && td.pattern !== null ? (td.pattern < 8 ? Math.floor(td.pattern/2)+2 : (td.pattern < 10 ? 6 : 7)) : -1;
+                    const isPeak = peakDay === d;
+                    const isSel = selectedSlots[`${d}-${idx}`];
+                    slotsHtml += `<div class="schedule-slot${isPeak?' trend-peak':''}${isSel?' selected':''}" draggable="true" ondragstart="handleDragStart(event,${d},${idx})" ondragend="handleDragEnd(event)" onclick="if(event.ctrlKey||event.metaKey){toggleSlotSelect(${d},${idx},event)}"><div class="slot-row-1"><span class="slot-time">${st} - ${et}</span><div class="slot-actions"><button class="btn-move" onclick="moveItem(${d},${idx},-1,event)">▲</button><button class="btn-move" onclick="moveItem(${d},${idx},1,event)">▼</button><button class="btn-del" onclick="removeFromSchedule(${d},${idx},event)">×</button></div></div><div class="slot-row-2"><span class="slot-name" title="所需材料：\n${matTip}">${p.name} ${trendInfo}</span><span class="slot-price" title="單間收益">$${val}</span></div><div class="slot-row-3"><span class="slot-cat">${p.cats.join('/')}</span>${isCombo?`<span class="slot-combo">(Combo x2)</span>`:`<span></span>`}</div></div>`;
                 }
             });
-            if(schedule.reduce((s,i)=>s+i.time,0) > 24) slotsHtml += `<div style="color:#f44; font-size:13px; text-align:center; font-weight:bold;">⚠ 超時</div>`;
+            if(currentHour - 16 > 24) slotsHtml += `<div style="color:#f44; font-size:13px; text-align:center; font-weight:bold;">⚠ 超時</div>`;
         } else {
             slotsHtml = `<div style="text-align:center; padding:20px 0; color:#666; font-size:14px; font-weight:bold;">本日公休</div>`;
         }
         
-        // V18 修復核心：紀錄「當前選中之星期」在排完所有班表後的最終氣勢，供右邊選單預覽使用
-        if (d === currentPeriod) {
-            currentCachedGroove = currentGroove;
-        }
-
         let dayTotalRevenue = dayRevenue * numWorkshops;
         totalWeeklyRevenue += dayTotalRevenue;
 
-        daysHtml += `
-            <div class="day-col ${isActive?'active':''} ${isRest?'rest':''}" onclick="selectDay(${d})" 
-                 ondragover="handleDragOver(event)" ondragenter="handleDragEnter(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, ${d})">
-                <div class="day-header">
-                    <div>${dayNames[d-1]}</div>
-                    <div class="day-sub"><span>週期 ${d}</span><label onclick="event.stopPropagation()"><input type="checkbox" ${isRest?'checked':''} onclick="toggleRestDay(${d}, event)"> 休</label></div>
-                </div>
-                <div class="day-revenue">
-                    <span style="font-size:11px;">${isRest?'':'<button class="btn-clear-day" onclick="clearDay('+d+', event)" title="清空本日班表">🗑️</button>'}</span>
-                    <span title="已乘上工坊數量">預估: $${dayTotalRevenue} <span style="color:#ff9900; font-size:12px;" title="結算氣勢/上限">(${currentGroove}/${grooveLimit})</span></span>
-                </div>
-                <div class="slot-list">${slotsHtml}</div>
-            </div>`;
+        // V18 fix: 記錄groove要在當天處理完之後
+        if (d === currentPeriod) { _cachedGroove = currentGroove; }
+
+        // V19: 整列移動下拉 + 多選操作列
+        let moveDayHtml = '';
+        if (!isRest && schedule.length > 0) {
+            const opts = [1,2,3,4,5,6,7].filter(x => x !== d && !restDays.includes(x)).map(x => `<option value="${x}">${dayNames[x-1]}</option>`).join('');
+            moveDayHtml = `<div style="display:flex; gap:4px; align-items:center; justify-content:center; padding:4px 8px; border-top:1px dashed #444;"><select id="moveDayTarget${d}" style="font-size:11px; padding:1px 3px; flex:1;" onclick="event.stopPropagation()">${opts}</select><button class="btn-move-all" onclick="moveWholeDay(${d}, parseInt(document.getElementById('moveDayTarget${d}').value), event)">整列搬移</button></div>`;
+        }
+        
+        const selCount = Object.keys(selectedSlots).length;
+        let multiBar = '';
+        if (selCount > 0 && isActive) {
+            multiBar = `<div class="multi-actions" onclick="event.stopPropagation()"><span style="font-size:11px; color:#00ccff;">已選${selCount}項</span><button class="btn-multi" onclick="moveSelectedTo(${d}, event)">移入本日</button><button class="btn-multi danger" onclick="deleteSelected(event)">刪除選取</button><button class="btn-multi" onclick="clearSelection(); refreshAll();">取消選取</button></div>`;
+        }
+
+        daysHtml += `<div class="day-col ${isActive?'active':''} ${isRest?'rest':''}" onclick="selectDay(${d})" ondragover="handleDragOver(event)" ondragenter="handleDragEnter(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, ${d})"><div class="day-header"><div>${dayNames[d-1]}</div><div class="day-sub"><span>週期 ${d}</span><label onclick="event.stopPropagation()"><input type="checkbox" ${isRest?'checked':''} onclick="toggleRestDay(${d}, event)"> 休</label></div></div><div class="day-revenue"><span style="font-size:11px;">${isRest?'':'<button class="btn-clear-day" onclick="clearDay('+d+', event)" title="清空本日班表">🗑️</button>'}</span><span title="已乘上工坊數量">預估: $${dayTotalRevenue} <span style="color:#ff9900; font-size:12px;" title="結算氣勢">(${currentGroove})</span></span></div><div class="slot-list">${slotsHtml}</div>${moveDayHtml}${multiBar}</div>`;
     }
 
     document.getElementById('daysContainer').innerHTML = daysHtml;
     document.getElementById('finalWeeklyResult').innerText = `全週預計總收益: ${totalWeeklyRevenue}`;
-    
-    // V18 修復：無需再傳參數，直接取用全域 cached 變數
-    updateProductList(); 
+    updateProductList(_cachedGroove);
     renderMaterialList(allMaterialsNeeded);
-    saveData(); 
+    saveData();
 }
 
-// V18 修復：改為直接取用全域 currentCachedGroove
-function updateProductList() {
+function updateProductList(baseGroove) {
     const ws = parseFloat(document.getElementById('wsLevel').value);
     const numWorkshops = parseInt(document.getElementById('numWorkshops').value) || 3;
     const grooveLimit = parseInt(document.getElementById('landmarks').value);
-    
-    let grooveForDisplay = currentCachedGroove;
-
+    let grooveForDisplay = baseGroove !== undefined ? baseGroove : _cachedGroove;
     const rank = parseInt(document.getElementById('userRank').value) || 1;
     const ex = Array.from(document.querySelectorAll('#livestockFilter input[type="checkbox"]:checked, #cropFilter input[type="checkbox"]:checked')).map(c => c.value);
-    
     const sched = weeklySchedules[currentPeriod];
-    let lastItem = null;
-    if (sched.length > 0) {
-        lastItem = sched[sched.length - 1];
-        if (lastItem.isDummy) lastItem = null; 
-    }
+    let lastItem = sched.length > 0 ? sched[sched.length - 1] : null;
+    if (lastItem && lastItem.isDummy) lastItem = null;
 
     let renderList = [];
-
     products.forEach(p => {
         if (p.level > rank || Object.keys(p.materials).some(m => ex.includes(m))) return;
         if (currentCat !== '全部' && !p.cats.includes(currentCat)) return;
         if (!currentTimeLimits.includes('全部') && !currentTimeLimits.includes(p.time)) return;
-        
         let isComboMatch = lastItem && !lastItem.isDummy && (p.name !== lastItem.name) && p.cats.some(c => lastItem.cats.includes(c));
         if (isComboFilterOn && !isComboMatch) return;
         if (isFavFilterOn && !favorites.includes(p.name)) return;
-        
         let previewGroove = grooveForDisplay;
-        if(isComboMatch) {
-            previewGroove += numWorkshops;
-            if(previewGroove > grooveLimit) previewGroove = grooveLimit;
-        }
-
-        const s = statusMap[p.name] || {pop: 1, supply: 1};
+        if(isComboMatch) { previewGroove += numWorkshops; if(previewGroove > grooveLimit) previewGroove = grooveLimit; }
+        const s = statusMap[p.name] || {pop:1, supply:1};
         const est = Math.floor(s.pop * s.supply * Math.floor(p.base * ws * (1 + previewGroove/100)));
         renderList.push({ p, est, isComboMatch, s });
     });
 
     if (currentSort === 'priceDesc') renderList.sort((a, b) => b.est - a.est);
     else if (currentSort === 'priceAsc') renderList.sort((a, b) => a.est - b.est);
+    else if (currentSort === 'timeDesc') renderList.sort((a, b) => b.p.time - a.p.time || b.est - a.est);
+    else if (currentSort === 'timeAsc') renderList.sort((a, b) => a.p.time - b.p.time || b.est - a.est);
 
-    // V17 優化: 一次性字串賦值
     document.getElementById('productList').innerHTML = renderList.map(item => {
         const { p, est, isComboMatch, s } = item;
         const isFav = favorites.includes(p.name);
-        return `
-        <div class="product-item">
+        const td = trendData[p.name];
+        const trendBadge = td && td.pattern !== null ? `<span class="trend-badge ${td.pattern%2===0?'trend-strong':'trend-weak'}" style="font-size:10px; margin-left:3px;">${TREND_NAMES[td.pattern]}</span>` : '';
+        // 峰值日提示
+        let peakHint = '';
+        if (td && td.pattern !== null) {
+            const peakDay = td.pattern < 8 ? Math.floor(td.pattern/2)+2 : (td.pattern < 10 ? 6 : 7);
+            if (peakDay === currentPeriod) peakHint = '<span style="color:#ddc040; font-size:11px; font-weight:bold; margin-left:3px;">🔥今日峰值</span>';
+        }
+        const matTipSidebar = Object.entries(p.materials).map(([m,q])=>`${m} x${q}`).join("\n");
+        return `<div class="product-item">
             <div class="pi-row-1">
-                <span class="pi-name">
-                    <span class="btn-star ${isFav ? 'fav-active' : ''}" onclick="toggleFav('${p.name}', event)" title="加入/移除最愛">${isFav ? '★' : '☆'}</span>
-                    ${p.name} <span class="pi-time">(${p.time}h)</span>
+                <span class="pi-name" title="${matTipSidebar}">
+                    <span class="btn-star ${isFav?'fav-active':''}" onclick="toggleFav('${p.name}', event)">${isFav?'★':'☆'}</span>
+                    ${p.name} <span class="pi-time">(${p.time}h)</span>${trendBadge}${peakHint}
                 </span>
-                <span class="p-final-price" title="單間工坊預估">$${est}</span>
+                <span class="p-final-price">$${est}</span>
             </div>
             <div class="pi-row-2">
                 <span>${p.cats.join('/')} | 成本: $${p.base}</span>
@@ -822,13 +1292,12 @@ function updateProductList() {
 }
 
 function addToSchedule(name) {
-    if(restDays.includes(currentPeriod)) return alert("休假中不能排班！請先取消休假。");
+    if(restDays.includes(currentPeriod)) return alert("休假中不能排班！");
     const p = products.find(x => x.name === name);
     if(weeklySchedules[currentPeriod].reduce((s,i)=>s+i.time, 0) + p.time > 24) return alert("時間不足 (最多24h)");
     weeklySchedules[currentPeriod].push({...p, isDummy: false});
     refreshAll();
 }
-
 function removeFromSchedule(d, i, event) {
     event.stopPropagation();
     weeklySchedules[d].splice(i, 1);
@@ -845,45 +1314,39 @@ function renderMaterialList(mats) {
         else if(crops.includes(m)) cropHtml.push(html);
         else genHtml.push(html);
     });
-    
     document.getElementById('rareMatList').innerHTML = rareHtml.join('');
     document.getElementById('generalMatList').innerHTML = genHtml.join('');
     document.getElementById('livestockMatList').innerHTML = liveHtml.join('');
     document.getElementById('cropMatList').innerHTML = cropHtml.join('');
 }
 
-function clearWeekly() { 
-    if(confirm("確定清空所有班表與設定嗎？")) { 
-        weeklySchedules = {1:[], 2:[], 3:[], 4:[], 5:[], 6:[], 7:[]}; 
+function clearWeekly() {
+    if(confirm("確定清空所有班表與設定嗎？")) {
+        weeklySchedules = {1:[], 2:[], 3:[], 4:[], 5:[], 6:[], 7:[]};
         products.forEach(p => statusMap[p.name] = { pop: 1.0, supply: 1.0 });
-        refreshAll(); 
-    } 
+        refreshAll();
+    }
 }
 
 function exportMarketCode() {
     const data = { market: statusMap };
     const code = utf8_to_b64(JSON.stringify(data));
-    document.getElementById('codeArea').value = code; document.getElementById('codeArea').select(); document.execCommand('copy'); 
-    alert("供需代碼已生成並複製到剪貼簿！快分享給朋友吧！");
+    document.getElementById('codeArea').value = code;
+    navigator.clipboard.writeText(code).then(() => alert("供需代碼已複製！")).catch(() => { document.getElementById('codeArea').select(); document.execCommand('copy'); alert("已生成並複製！"); });
 }
-
 function importMarketCode() {
     try {
         const inputCode = document.getElementById('codeArea').value.trim();
         if (!inputCode) return alert("請先貼上代碼！");
-        
         let data;
         try { data = JSON.parse(b64_to_utf8(inputCode)); } catch(e) { data = JSON.parse(inputCode); }
-        
-        if(data && data.market && data.market["恢復藥"]) {
+        if(data && data.market && Object.keys(data.market).some(k => statusMap[k])) {
             Object.keys(data.market).forEach(k => { if(statusMap[k]) statusMap[k] = data.market[k]; });
-            refreshAll(); 
-            if (document.getElementById('batchOverlay').style.display === 'flex') { renderBatchPanel(); }
+            refreshAll();
+            if (document.getElementById('batchOverlay').style.display === 'flex') renderBatchPanel();
             alert("市場行情匯入成功！");
-        } else {
-            alert("這不是有效的專屬供需代碼！\n(可能拿到國外網站的代碼了，請使用本工具生成的代碼進行交流)");
-        }
-    } catch(e) { alert("代碼解析失敗，請確認代碼是否複製完整或格式正確！"); console.error(e); }
+        } else { alert("無效的供需代碼！"); }
+    } catch(e) { alert("代碼解析失敗！"); console.error(e); }
 }
 
 init();
